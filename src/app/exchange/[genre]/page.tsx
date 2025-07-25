@@ -10,9 +10,8 @@ export default function GenrePage() {
   const params = useParams()
   const genre = params.genre as string
   
-  const [currentThought, setCurrentThought] = useState<any>(null)
+  const [currentThought, setCurrentThought] = useState<{ id?: string; content: string; streak_count?: number; dislike_count?: number; is_fallback?: boolean } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [thoughtIndex, setThoughtIndex] = useState(0)
 
   const genreConfig = {
     deep: { color: '#00ffff', emoji: '🤔', title: 'Deep Thoughts' },
@@ -104,10 +103,10 @@ export default function GenrePage() {
       if (error) throw error
 
       // Update local state
-      setCurrentThought((prev: any) => ({
+      setCurrentThought((prev) => prev ? ({
         ...prev,
         [updateField]: newCount
-      }))
+      }) : null)
 
       // Fetch next thought after a brief delay
       setTimeout(() => {
@@ -148,7 +147,7 @@ export default function GenrePage() {
           <div className="w-full">
             <div className="bg-black/40 border-2 border-pink-500 rounded-2xl p-8 mb-6 neon-glow">
               <div className="text-2xl md:text-3xl font-medium text-white mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
-                "{currentThought.content}"
+                &quot;{currentThought.content}&quot;
               </div>
               <div className="text-sm text-pink-300">
                 {currentThought.streak_count || 0} people have seen this thought

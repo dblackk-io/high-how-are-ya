@@ -5,8 +5,8 @@ import { seedDatabase, checkDatabaseStatus } from '@/lib/seed-data'
 
 export default function SeedPage() {
   const [isSeeding, setIsSeeding] = useState(false)
-  const [status, setStatus] = useState<any>(null)
-  const [result, setResult] = useState<any>(null)
+  const [status, setStatus] = useState<{ count?: number | null; needsSeeding?: boolean } | null>(null)
+  const [result, setResult] = useState<{ success: boolean; count?: number; error?: unknown } | null>(null)
 
   useEffect(() => {
     checkStatus()
@@ -110,7 +110,7 @@ export default function SeedPage() {
                   Error seeding database
                 </div>
                 <div className="text-sm text-red-300">
-                  {result.error?.message || 'Unknown error occurred'}
+                  {(result.error as Error)?.message || 'Unknown error occurred'}
                 </div>
               </div>
             )}
@@ -120,8 +120,8 @@ export default function SeedPage() {
 
       {/* Navigation */}
       <div className="mt-8">
-        <a
-          href="/exchange"
+        <button
+          onClick={() => window.location.href = '/exchange'}
           className="neon-btn text-lg px-6 py-3 font-bold rounded-lg uppercase tracking-wider"
           style={{
             background: 'transparent',
@@ -131,7 +131,7 @@ export default function SeedPage() {
           }}
         >
           Back to Exchange
-        </a>
+        </button>
       </div>
     </div>
   )

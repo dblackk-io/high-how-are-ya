@@ -86,7 +86,7 @@ const generateThoughts = () => {
   
   // Generate thoughts for each genre
   Object.entries(thoughtTemplates).forEach(([genre, templates]) => {
-    templates.forEach((content, index) => {
+    templates.forEach((content) => {
       thoughts.push({
         content,
         vibe_tag: genre,

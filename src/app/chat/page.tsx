@@ -1,36 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Head from 'next/head'
-import { supabase, getSessionId, Thought } from '@/lib/supabase'
+import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 export default function ChatPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const [thought, setThought] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submittedThought, setSubmittedThought] = useState<Thought | null>(null)
   const [isNSFW, setIsNSFW] = useState(false)
-  const [showContentPreferences, setShowContentPreferences] = useState(false)
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([])
-  const [currentThought, setCurrentThought] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isBlurred, setIsBlurred] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  const contentOptions = [
-    { id: 'deep', name: 'Deep', emoji: '🤔', color: '#00ffff' },
-    { id: 'funny', name: 'Funny', emoji: '😂', color: '#ffff00' },
-    { id: 'weird', name: 'Weird', emoji: '👽', color: '#00ff00' },
-    { id: 'nsfw', name: 'NSFW', emoji: '🔥', color: '#ff00ff' }
-  ]
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
-  const togglePreference = (prefId: string) => {
-    setSelectedPreferences(prev => 
-      prev.includes(prefId) 
-        ? prev.filter(id => id !== prefId)
-        : [...prev, prefId]
-    )
+  const removeImage = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,369 +32,156 @@ export default function ChatPage() {
     if (!thought.trim() || isSubmitting) return
 
     setIsSubmitting(true)
-    const sessionId = getSessionId()
-    if (!sessionId) return
-
-    console.log('Submitting thought:', { content: thought, user_id: sessionId, vibe_tag: isNSFW ? 'horny' : 'deep', nsfw_flag: isNSFW })
 
     try {
-      // Insert the thought into Supabase
-      const { data: newThought, error } = await supabase
+      const { error } = await supabase
         .from('thoughts')
         .insert({
           content: thought.trim(),
-          user_id: null, // Remove foreign key constraint for anonymous thoughts
-          vibe_tag: isNSFW ? 'horny' : 'deep', // Default to deep for now, horny for NSFW
+          user_id: null,
+          vibe_tag: isNSFW ? 'horny' : 'deep',
           nsfw_flag: isNSFW,
           gender_target: null
         })
         .select()
         .single()
 
-      if (error) {
-        console.error('Supabase error details:', error)
-        throw error
-      }
+      if (error) throw error
 
-      console.log('Thought submitted successfully:', newThought)
-      setSubmittedThought(newThought)
       setThought('')
-      
-      // Show content preferences after submission
-      setShowContentPreferences(true)
+      setSelectedImage(null)
+      setImagePreview(null)
+      setIsNSFW(false)
       
     } catch (error) {
       console.error('Error submitting thought:', error)
-      console.error('Error type:', typeof error)
-      console.error('Error message:', (error as any)?.message)
-      console.error('Error details:', (error as any)?.details)
-      // TODO: Add error toast
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const fetchThoughtByPreferences = async () => {
-    if (selectedPreferences.length === 0) return
-    
-    setIsLoading(true)
-    try {
-      let query = supabase
-        .from('thoughts')
-        .select('*')
-        .eq('is_active', true)
-
-      // Filter by selected preferences
-      const nsfwSelected = selectedPreferences.includes('nsfw')
-      const sfwSelected = selectedPreferences.some(p => p !== 'nsfw')
-      
-      if (nsfwSelected && !sfwSelected) {
-        // Only NSFW selected
-        query = query.eq('nsfw_flag', true)
-      } else if (sfwSelected && !nsfwSelected) {
-        // Only SFW selected
-        query = query.eq('nsfw_flag', false)
-      }
-      // If both selected, no filter (show all)
-
-      const { data, error } = await query.limit(1).single()
-
-      if (error) {
-        console.error('Error fetching thought:', error)
-        setCurrentThought({
-          content: "No thoughts found matching your preferences. Try adjusting your selections!",
-          is_fallback: true
-        })
-      } else {
-        setCurrentThought(data)
-        setIsBlurred(data.nsfw_flag) // Blur if NSFW
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleReaction = async (reactionType: 'like' | 'dislike') => {
-    if (!currentThought || currentThought.is_fallback) return
-
-    try {
-      // Record the interaction
-      await supabase
-        .from('interactions')
-        .insert({
-          user_id: null,
-          thought_id: currentThought.id,
-          type: 'star',
-          tag_value: reactionType
-        })
-
-      // Update the thought's streak/dislike count
-      const updateField = reactionType === 'like' ? 'streak_count' : 'dislike_count'
-      const currentCount = currentThought[updateField] || 0
-      const newCount = currentCount + 1
-      
-      const { error } = await supabase
-        .from('thoughts')
-        .update({ 
-          [updateField]: newCount,
-          is_active: reactionType === 'dislike' && (currentThought.dislike_count || 0) >= 2 ? false : true
-        })
-        .eq('id', currentThought.id)
-
-      if (error) throw error
-
-      // Update local state
-      setCurrentThought((prev: any) => ({
-        ...prev,
-        [updateField]: newCount
-      }))
-
-      // Fetch next thought
-      setTimeout(() => {
-        fetchThoughtByPreferences()
-      }, 500)
-
-    } catch (error) {
-      console.error('Error recording reaction:', error)
-    }
-  }
-
-  const handleNext = () => {
-    fetchThoughtByPreferences()
-  }
-
-  const handleChat = () => {
-    // TODO: Implement chat functionality
-    console.log('Starting chat with thought:', currentThought)
-  }
-
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center relative overflow-hidden">
-      <Head>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
-      </Head>
-      
-      {/* Main Chat Interface */}
-      {!showContentPreferences && (
-        <div className="neon-chatbox flex flex-col items-center justify-center p-16 rounded-3xl shadow-2xl" style={{ minWidth: 600, maxWidth: 800 }}>
-          <div className="flex items-center justify-center mb-2">
-            <h2 className="text-center font-black text-5xl md:text-6xl neon-title" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
-              Anonymous Chat
-            </h2>
-          </div>
+    <div className="min-h-screen w-full bg-black flex items-center justify-center p-8">
+      <div className="w-full max-w-4xl">
+        
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-black neon-title uppercase tracking-tight mb-4" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
+            Share Your Thoughts
+          </h1>
+          <p className="text-xl text-gray-400">
+            Express yourself through words and images
+          </p>
+        </div>
 
-          {/* NSFW Toggle */}
-          <div className="mb-6 flex items-center">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isNSFW}
-                onChange={(e) => setIsNSFW(e.target.checked)}
-                className="mr-3 w-5 h-5 text-pink-600 bg-black border-2 border-pink-500 rounded focus:ring-pink-500"
-              />
-              <span className="text-xl text-pink-400 font-bold">NSFW Content</span>
-            </label>
-          </div>
-
-          {/* Submission Form */}
-          <form onSubmit={handleSubmit} className="w-full flex flex-row gap-6">
-            <input
-              className="flex-1 px-10 py-8 rounded-2xl text-3xl font-medium bg-black/60 border-2 border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-400 neon-input text-white placeholder-white/60 backdrop-blur-md"
-              placeholder={isNSFW ? 'Type your NSFW thought...' : 'Type your thought...'}
-              type="text"
+        {/* Main Chat Interface */}
+        <div className="bg-black border border-[#ff00cc] rounded-2xl p-8" style={{
+          boxShadow: "0 0 30px rgba(255, 0, 204, 0.3)"
+        }}>
+          
+          {/* Text Input Area */}
+          <div className="mb-6">
+            <textarea
+              className="w-full h-48 px-6 py-4 rounded-xl text-white bg-black border border-[#ff00cc] focus:outline-none focus:ring-2 focus:ring-[#ff00cc] placeholder-gray-500 resize-none text-lg"
+              placeholder="What's on your mind? Share your thoughts, ideas, or observations..."
               value={thought}
               onChange={(e) => setThought(e.target.value)}
               disabled={isSubmitting}
-              style={{ fontFamily: 'Inter, sans-serif' }}
+              style={{
+                boxShadow: "0 0 15px rgba(255, 0, 204, 0.2)"
+              }}
             />
-            <button 
-              type="submit"
-              disabled={isSubmitting || !thought.trim()}
-              className="neon-btn neon-solid text-3xl px-16 py-8 font-extrabold rounded-2xl uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Sending...' : 'Send'}
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Content Preferences Selection */}
-      {showContentPreferences && !currentThought && (
-        <div className="neon-chatbox flex flex-col items-center justify-center p-16 rounded-3xl shadow-2xl" style={{ minWidth: 600, maxWidth: 800 }}>
-          <h2 className="text-center font-black text-4xl md:text-5xl neon-title mb-8" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
-            What do you want to see?
-          </h2>
-          
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            {contentOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => togglePreference(option.id)}
-                className={`p-4 rounded-xl border-2 font-bold text-lg transition-all ${
-                  selectedPreferences.includes(option.id)
-                    ? 'border-white bg-white/20'
-                    : 'border-gray-600 bg-black/40'
-                }`}
-                style={{
-                  borderColor: selectedPreferences.includes(option.id) ? option.color : '#666',
-                  boxShadow: selectedPreferences.includes(option.id) ? `0 0 20px ${option.color}` : 'none'
-                }}
-              >
-                <div className="text-2xl mb-2">{option.emoji}</div>
-                <div>{option.name}</div>
-              </button>
-            ))}
           </div>
 
+          {/* Image Upload Section */}
+          <div className="mb-8">
+            {!selectedImage ? (
+              <label
+                htmlFor="image-upload"
+                className="flex items-center justify-center w-full h-32 border-2 border-dashed border-[#ff00cc] rounded-xl text-[#ff00cc] bg-black hover:bg-[#ff00cc]/5 cursor-pointer transition-all"
+                style={{
+                  boxShadow: "0 0 15px rgba(255, 0, 204, 0.2)"
+                }}
+              >
+                <div className="text-center">
+                  <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <p className="text-sm font-medium">Add a photo (optional)</p>
+                  <p className="text-xs text-gray-500 mt-1">Click to upload an image</p>
+                </div>
+              </label>
+            ) : (
+              <div className="relative w-full h-48">
+                <img
+                  src={imagePreview || ""}
+                  alt="Upload Preview"
+                  className="w-full h-full object-cover rounded-xl border border-[#ff00cc]"
+                  style={{ 
+                    boxShadow: "0 0 20px rgba(255, 0, 204, 0.3)"
+                  }}
+                />
+                <button
+                  onClick={removeImage}
+                  className="absolute top-3 right-3 bg-black/80 text-[#ff00cc] p-2 rounded-full hover:bg-red-600 transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+          </div>
+
+          {/* Controls and Submit */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isNSFW}
+                  onChange={(e) => setIsNSFW(e.target.checked)}
+                  className="mr-3 w-5 h-5 text-[#ff00cc] bg-black border-2 border-[#ff00cc] rounded focus:ring-[#ff00cc]"
+                />
+                <span className="text-[#ff00cc] text-base font-medium">NSFW Content</span>
+              </label>
+              
+              <div className="text-sm text-gray-500">
+                {thought.length}/500 characters
+              </div>
+            </div>
+            
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting || !thought.trim()}
+              className="px-8 py-4 bg-[#ff00cc] text-black font-bold rounded-xl hover:bg-[#ff33cc] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg"
+              style={{
+                boxShadow: "0 0 20px rgba(255, 0, 204, 0.5)"
+              }}
+            >
+              {isSubmitting ? "Posting..." : "Post Thought"}
+            </button>
+          </div>
+        </div>
+
+        {/* Back to Feed Button */}
+        <div className="text-center mt-8">
           <button
-            onClick={fetchThoughtByPreferences}
-            disabled={selectedPreferences.length === 0}
-            className="neon-btn neon-solid text-2xl px-12 py-6 font-bold rounded-xl uppercase tracking-wider disabled:opacity-50"
+            onClick={() => window.history.back()}
+            className="text-gray-400 hover:text-[#ff00cc] transition-colors text-lg font-medium"
           >
-            Find Thoughts
+            ← Back to Feed
           </button>
         </div>
-      )}
-
-      {/* Thought Display */}
-      {currentThought && (
-        <div className="neon-chatbox flex flex-col items-center justify-center p-16 rounded-3xl shadow-2xl" style={{ minWidth: 600, maxWidth: 800 }}>
-          {isLoading ? (
-            <div className="text-center">
-              <div className="text-3xl text-pink-400 mb-4">Finding thoughts...</div>
-              <div className="animate-pulse text-pink-200 text-4xl">⚡</div>
-            </div>
-          ) : (
-            <div className="w-full">
-              <div className="bg-black/40 border-2 border-pink-500 rounded-2xl p-8 mb-6 neon-glow">
-                <div 
-                  className={`text-2xl md:text-3xl font-medium text-white mb-4 transition-all ${
-                    isBlurred ? 'blur-md' : ''
-                  }`}
-                  style={{ fontFamily: 'Inter, sans-serif' }}
-                >
-                  "{currentThought.content}"
-                </div>
-                {isBlurred && (
-                  <div className="text-center mb-4">
-                    <button
-                      onClick={() => setIsBlurred(false)}
-                      className="neon-btn text-lg px-6 py-3 font-bold rounded-lg uppercase tracking-wider"
-                      style={{
-                        background: 'transparent',
-                        borderColor: '#ff00ff',
-                        color: '#ff00ff',
-                        boxShadow: '0 0 20px #ff00ff'
-                      }}
-                    >
-                      🔥 Unblur NSFW Content
-                    </button>
-                  </div>
-                )}
-                <div className="text-sm text-pink-300">
-                  {currentThought.streak_count || 0} people have seen this thought
-                </div>
-              </div>
-              
-              {/* Action Buttons */}
-              <div className="flex gap-4 justify-center mb-4">
-                <button
-                  onClick={() => handleReaction('like')}
-                  className="neon-btn neon-solid text-xl px-8 py-4 font-bold rounded-xl uppercase tracking-wider"
-                >
-                  👍 Like
-                </button>
-                <button
-                  onClick={() => handleReaction('dislike')}
-                  className="neon-btn neon-solid text-xl px-8 py-4 font-bold rounded-xl uppercase tracking-wider"
-                  style={{ 
-                    background: '#ff4444', 
-                    borderColor: '#ff4444',
-                    boxShadow: '0 0 40px #ff4444, 0 0 120px #ff4444'
-                  }}
-                >
-                  👎 Dislike
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="neon-btn text-xl px-8 py-4 font-bold rounded-xl uppercase tracking-wider"
-                  style={{
-                    background: 'transparent',
-                    borderColor: '#00ffff',
-                    color: '#00ffff',
-                    boxShadow: '0 0 20px #00ffff'
-                  }}
-                >
-                  Next →
-                </button>
-              </div>
-
-              {/* Chat Button */}
-              <div className="text-center">
-                <button
-                  onClick={handleChat}
-                  className="neon-btn text-lg px-6 py-3 font-bold rounded-lg uppercase tracking-wider"
-                  style={{
-                    background: 'transparent',
-                    borderColor: '#ffff00',
-                    color: '#ffff00',
-                    boxShadow: '0 0 20px #ffff00'
-                  }}
-                >
-                  💬 Start Chat
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      <style jsx global>{`
-        body {
-          background: #000 !important;
-          font-family: 'Inter', sans-serif !important;
-        }
-        .neon-title {
-          color: #ff00cc;
-          text-shadow:
-            0 0 20px #ff00cc,
-            0 0 40px #ff00cc,
-            0 0 80px #ff00cc,
-            0 0 160px #ff00cc;
-        }
-        .neon-btn {
-          transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .neon-btn:active {
-          transform: scale(0.97);
-        }
-        .neon-solid {
-          color: #000;
-          background: #ff00cc;
-          border: 4px solid #ff00cc;
-          box-shadow:
-            0 0 40px #ff00cc,
-            0 0 120px #ff00cc;
-        }
-        .neon-solid:hover {
-          background: #ff33cc;
-          box-shadow:
-            0 0 80px #ff00cc,
-            0 0 160px #ff00cc;
-        }
-        .neon-chatbox {
-          background: linear-gradient(135deg, #1a0022cc 60%, #ff00cc22 100%);
-          border: 2px solid #ff00cc;
-          box-shadow:
-            0 0 40px #ff00cc,
-            0 0 120px #ff00cc;
-        }
-        .neon-glow {
-          box-shadow: 0 0 20px #ff00cc;
-        }
-      `}</style>
+      </div>
     </div>
   )
 } 

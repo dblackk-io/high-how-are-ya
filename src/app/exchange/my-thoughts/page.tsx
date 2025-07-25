@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Head from 'next/head'
-import { supabase, getSessionId } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export default function MyThoughtsPage() {
   const router = useRouter()
-  const [myThoughts, setMyThoughts] = useState<any[]>([])
+  const [myThoughts, setMyThoughts] = useState<{ id: string; content: string; streak_count?: number; dislike_count?: number; created_at: string; vibe_tag?: string }[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -17,8 +17,6 @@ export default function MyThoughtsPage() {
   const fetchMyThoughts = async () => {
     setIsLoading(true)
     try {
-      const sessionId = getSessionId()
-      
       // For now, we'll show all thoughts since they're anonymous
       // In the future, we could track user sessions more robustly
       const { data, error } = await supabase
@@ -39,12 +37,11 @@ export default function MyThoughtsPage() {
     }
   }
 
-  const getThoughtStatus = (thought: any) => {
+  const getThoughtStatus = (thought: { streak_count?: number; dislike_count?: number }) => {
     const streakCount = thought.streak_count || 0
     const dislikeCount = thought.dislike_count || 0
     
     if (dislikeCount >= 3) return { status: 'Dead', color: '#ff4444', emoji: '💀' }
-    if (streakCount >= 10) return { status: 'Viral', color: '#00ff00', emoji: '🔥' }
     if (streakCount >= 5) return { status: 'Trending', color: '#ffff00', emoji: '⚡' }
     if (streakCount >= 2) return { status: 'Growing', color: '#00ffff', emoji: '📈' }
     return { status: 'New', color: '#888', emoji: '🆕' }
@@ -73,13 +70,13 @@ export default function MyThoughtsPage() {
           </div>
         ) : myThoughts.length > 0 ? (
           <div className="w-full space-y-6">
-            {myThoughts.map((thought, index) => {
+            {myThoughts.map((thought) => {
               const status = getThoughtStatus(thought)
               return (
                 <div key={thought.id} className="bg-black/40 border-2 border-pink-500 rounded-2xl p-6 neon-glow">
                   <div className="flex items-start justify-between mb-4">
                     <div className="text-lg md:text-xl font-medium text-white flex-1" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      "{thought.content}"
+                      &quot;{thought.content}&quot;
                     </div>
                     <div className="ml-4 text-right">
                       <div className="text-sm font-bold" style={{ color: status.color }}>

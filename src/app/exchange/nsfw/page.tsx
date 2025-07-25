@@ -1,7 +1,7 @@
 "use client"
 
 import Head from 'next/head'
-import { useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
 
 export default function NSFWExchangePage() {
@@ -46,7 +46,7 @@ export default function NSFWExchangePage() {
           <button
             className="neon-btn neon-solid text-xl px-8 py-3 rounded-xl font-black tracking-[0.18em] shadow-xl uppercase transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
             style={{ fontFamily: 'Space Grotesk, Inter, sans-serif', borderWidth: '3px', borderColor: '#ff00cc', textShadow: '0 0 24px #ff00cc' }}
-            onClick={() => router.push('/chat?nsfw=1')}
+            onClick={() => router.push('/exchange/add-thought?nsfw=1')}
             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.06)'}
             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
           >

@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${spaceGrotesk.variable} bg-black text-white overflow-hidden`} suppressHydrationWarning={true}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} bg-black text-white`} suppressHydrationWarning={true}>
         {children}
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, Sparkles } from 'lucide-react'
+import { X, Sparkles } from 'lucide-react'
 
 interface ThoughtSubmitProps {
   isOpen: boolean
@@ -27,7 +27,7 @@ export default function ThoughtSubmit({ isOpen, onClose, onSubmit }: ThoughtSubm
       setNsfw(false)
       onClose()
     } catch (error) {
-      console.error('Failed to submit thought:', error)
+      // Error handling for thought submission
     } finally {
       setIsSubmitting(false)
     }
@@ -58,7 +58,7 @@ export default function ThoughtSubmit({ isOpen, onClose, onSubmit }: ThoughtSubm
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold gradient-text">What's Your Damage?</h2>
+              <h2 className="text-xl font-bold gradient-text">What&apos;s Your Damage?</h2>
               <button
                 onClick={onClose}
                 className="p-2 rounded-full bg-gray-800 hover:bg-gray-700"

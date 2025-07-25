@@ -1,194 +1,109 @@
-"use client"
-
+"use client";
+import { useState } from "react";
 import { useRouter } from 'next/navigation'
-import React from 'react'
-
-const GENRES = [
-  {
-    id: "deep",
-    name: "Deep Thoughts",
-    description: "Philosophical, introspective, and profound reflections on life, existence, and meaning.",
-    color: "#00ffff",
-    gradient: "linear-gradient(135deg, #00ffff 0%, #0080ff 100%)"
-  },
-  {
-    id: "funny",
-    name: "Humor & Comedy",
-    description: "Jokes, memes, wild stories, and anything that makes you laugh out loud.",
-    color: "#ffff00",
-    gradient: "linear-gradient(135deg, #ffff00 0%, #ff8000 100%)"
-  },
-  {
-    id: "weird",
-    name: "Strange & Surreal",
-    description: "Bizarre thoughts, surreal concepts, and the wonderfully weird side of imagination.",
-    color: "#00ff00",
-    gradient: "linear-gradient(135deg, #00ff00 0%, #00ff80 100%)"
-  },
-  {
-    id: "nsfw",
-    name: "Adult Content",
-    description: "Explicit sexual content, adult themes, and graphic material for mature audiences.",
-    color: "#ff00ff",
-    gradient: "linear-gradient(135deg, #ff00ff 0%, #8000ff 100%)"
-  },
-  {
-    id: "random",
-    name: "Random Mix",
-    description: "A diverse collection of thoughts from all categories, completely unpredictable.",
-    color: "#ff8800",
-    gradient: "linear-gradient(135deg, #ff8800 0%, #ff0080 100%)"
-  },
-  {
-    id: "fresh",
-    name: "Fresh & New",
-    description: "The latest thoughts from the community, hot off the press.",
-    color: "#00ff80",
-    gradient: "linear-gradient(135deg, #00ff80 0%, #0080ff 100%)"
-  }
-]
 
 export default function BrowsePage() {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const router = useRouter()
-  const [selectedGenres, setSelectedGenres] = React.useState<string[]>([])
 
-  const toggleGenre = (genreId: string) => {
-    setSelectedGenres(prev => 
-      prev.includes(genreId) 
-        ? prev.filter(id => id !== genreId)
-        : [...prev, genreId]
-    )
-  }
+  const topics = [
+    "Philosophy", "Humor", "Relationships",
+    "Technology", "Creativity", "Politics",
+    "Science", "Lifestyle", "Entertainment"
+  ];
+
+  const toggle = (topic: string) => {
+    setSelected(prev =>
+      prev.includes(topic)
+        ? prev.filter(t => t !== topic)
+        : [...prev, topic]
+    );
+  };
 
   const handleContinue = () => {
-    if (selectedGenres.length === 0) return
-    const genreParams = selectedGenres.join(',')
-    router.push(`/exchange/thoughts?genres=${genreParams}`)
+    if (selected.length < 3 || !ageGroup) return
+    const topicParams = selected.join(',')
+    router.push(`/exchange/feed?topics=${topicParams}&age=${ageGroup}`)
   }
 
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center relative overflow-hidden">
-
-      
-      {/* Header */}
-      <div className="mb-16">
-        <h1 className="text-center font-black text-5xl md:text-6xl neon-title uppercase tracking-tight" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
-          Choose Your Content
-        </h1>
-        <p className="text-center text-xl text-gray-400 mt-4 max-w-2xl">
-          Select the types of thoughts you want to explore. You can choose multiple categories.
+    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4">
+      <div className="text-center mb-8">
+        <h1 className="text-xl font-semibold mb-3">What do you want to see?</h1>
+        <p className="text-sm text-gray-400 mb-8">
+          Select at least 3 topics to personalize your feed. They will help us show you relevant thoughts.
         </p>
-      </div>
-
-      {/* Genre Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl w-full px-8 mb-12">
-        {GENRES.map((genre) => (
-          <button
-            key={genre.id}
-            onClick={() => toggleGenre(genre.id)}
-            className={`relative overflow-hidden rounded-2xl p-8 text-left transition-all duration-300 ${
-              selectedGenres.includes(genre.id)
-                ? 'ring-4 ring-white shadow-2xl scale-105'
-                : 'hover:scale-102'
-            }`}
-            style={{
-              background: selectedGenres.includes(genre.id) 
-                ? genre.gradient 
-                : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-              border: `2px solid ${selectedGenres.includes(genre.id) ? genre.color : 'rgba(255,255,255,0.1)'}`,
-              boxShadow: selectedGenres.includes(genre.id) 
-                ? `0 0 40px ${genre.color}, 0 0 80px ${genre.color}` 
-                : '0 4px 20px rgba(0,0,0,0.3)'
-            }}
-          >
-            {/* Selection Indicator */}
-            {selectedGenres.includes(genre.id) && (
-              <div className="absolute top-4 right-4 w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                <div className="w-3 h-3 bg-black rounded-full"></div>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              <h3 
-                className="text-2xl font-black uppercase tracking-wider"
-                style={{ 
-                  color: selectedGenres.includes(genre.id) ? '#000' : genre.color,
-                  textShadow: selectedGenres.includes(genre.id) ? 'none' : `0 0 20px ${genre.color}`
-                }}
-              >
-                {genre.name}
-              </h3>
-              <p 
-                className="text-base leading-relaxed"
-                style={{ 
-                  color: selectedGenres.includes(genre.id) ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.7)'
-                }}
-              >
-                {genre.description}
+        
+        {/* Age Selection */}
+        <div className="mb-8">
+          <h2 className="text-lg font-medium mb-4">Are you...</h2>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => setAgeGroup('under18')}
+              className={`px-8 py-3 rounded-xl transition-all duration-200 ease-in-out border-2 font-semibold
+                ${ageGroup === 'under18'
+                  ? "bg-white text-black border-white shadow-md"
+                  : "border-gray-600 text-white hover:border-white hover:shadow"
+                }
+              `}
+            >
+              Under 18
+            </button>
+            <button
+              onClick={() => setAgeGroup('18plus')}
+              className={`px-8 py-3 rounded-xl transition-all duration-200 ease-in-out border-2 font-semibold
+                ${ageGroup === '18plus'
+                  ? "bg-white text-black border-white shadow-md"
+                  : "border-gray-600 text-white hover:border-white hover:shadow"
+                }
+              `}
+            >
+              18+
+            </button>
+          </div>
+          
+          {ageGroup === '18plus' && (
+            <div className="mt-4 p-4 bg-gray-900/50 border border-gray-700 rounded-lg max-w-md mx-auto">
+              <p className="text-sm text-gray-300 leading-relaxed">
+                <span className="text-[#ff00cc] font-medium">18+ Content Notice:</span> You&apos;ll have access to unfiltered thoughts, including mature themes, explicit language, and adult discussions. Content moderation is relaxed while maintaining basic safety standards.
               </p>
             </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 max-w-2xl w-full mb-8">
+        {topics.map((topic) => (
+          <button
+            key={topic}
+            onClick={() => toggle(topic)}
+            className={`border rounded-xl py-3 px-4 text-center transition-all duration-200 ease-in-out w-full
+              ${selected.includes(topic)
+                ? "bg-white text-black font-semibold shadow-md"
+                : "border-gray-600 hover:border-white hover:shadow"}
+            `}
+          >
+            {topic}
           </button>
         ))}
       </div>
 
-      {/* Continue Button */}
-      <div className="flex gap-6">
-        <button
-          onClick={() => router.push('/exchange')}
-          className="neon-btn text-xl px-8 py-4 font-bold rounded-xl uppercase tracking-wider"
-          style={{
-            background: 'transparent',
-            borderColor: '#666',
-            color: '#666',
-            boxShadow: '0 0 20px #666'
-          }}
-        >
-          Back
-        </button>
-        
+      {/* ✅ FOOTER */}
+      <div className="flex justify-between items-center w-full max-w-2xl px-1">
+        <span className="text-sm text-gray-500">
+          {selected.length} of 3 selected • {ageGroup ? (ageGroup === 'under18' ? 'Under 18' : '18+') : 'Age not selected'}
+        </span>
         <button
           onClick={handleContinue}
-          disabled={selectedGenres.length === 0}
-          className="neon-btn neon-solid text-xl px-12 py-4 font-bold rounded-xl uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={selected.length < 3 || !ageGroup}
+          className={`px-4 py-1.5 rounded-full transition-all duration-200 text-sm
+            ${selected.length >= 3 && ageGroup ? "bg-white text-black" : "bg-gray-800 text-gray-500 cursor-not-allowed"}
+          `}
         >
-          Continue ({selectedGenres.length} selected)
+          Next
         </button>
       </div>
-
-      <style jsx global>{`
-        body {
-          background: #000 !important;
-          font-family: 'Inter', sans-serif !important;
-        }
-        .neon-title {
-          color: #ff00cc;
-          text-shadow:
-            0 0 20px #ff00cc,
-            0 0 40px #ff00cc,
-            0 0 80px #ff00cc,
-            0 0 160px #ff00cc;
-        }
-        .neon-btn {
-          transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .neon-btn:active {
-          transform: scale(0.97);
-        }
-        .neon-solid {
-          color: #000;
-          background: #ff00cc;
-          border: 4px solid #ff00cc;
-          box-shadow:
-            0 0 40px #ff00cc,
-            0 0 120px #ff00cc;
-        }
-        .neon-solid:hover {
-          background: #ff33cc;
-          box-shadow:
-            0 0 80px #ff00cc,
-            0 0 160px #ff00cc;
-        }
-      `}</style>
     </div>
-  )
+  );
 } 

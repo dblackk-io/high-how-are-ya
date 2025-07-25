@@ -1,8 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
 
-console.log('SUPABASE URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-console.log('SUPABASE ANON KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
@@ -30,6 +27,15 @@ export interface Thought {
   is_active?: boolean
 }
 
+export interface Comment {
+  id: string
+  thought_id: string
+  user_id: string | null
+  content: string
+  created_at: string
+  is_active: boolean
+}
+
 export interface Interaction {
   id: string
   user_id: string
@@ -37,6 +43,16 @@ export interface Interaction {
   type: 'star' | 'share' | 'tag'
   tag_value?: string
   created_at: string
+}
+
+export interface Feedback {
+  id: string
+  session_id: string
+  rating: number
+  text?: string
+  created_at: string
+  user_agent?: string
+  ip_address?: string
 }
 
 // Anonymous session ID logic

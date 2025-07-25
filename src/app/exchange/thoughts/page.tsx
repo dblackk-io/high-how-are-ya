@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-export default function ThoughtsPage() {
+function ThoughtsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const genres = searchParams.get('genres')?.split(',') || []
   
-  const [currentThought, setCurrentThought] = useState<any>(null)
+  const [currentThought, setCurrentThought] = useState<{ id?: string; content: string; streak_count?: number; dislike_count?: number; nsfw_flag?: boolean; is_fallback?: boolean } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isBlurred, setIsBlurred] = useState(false)
 
@@ -97,10 +97,10 @@ export default function ThoughtsPage() {
       if (error) throw error
 
       // Update local state
-      setCurrentThought((prev: any) => ({
+      setCurrentThought((prev) => prev ? ({
         ...prev,
         [updateField]: newCount
-      }))
+      }) : null)
 
       // Fetch next thought
       setTimeout(() => {
@@ -117,8 +117,7 @@ export default function ThoughtsPage() {
   }
 
   const handleChat = () => {
-    // TODO: Implement chat functionality
-    console.log('Starting chat with thought:', currentThought)
+    // Chat functionality coming soon
   }
 
   const getGenreDisplay = () => {
@@ -164,7 +163,7 @@ export default function ThoughtsPage() {
                 }`}
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
-                "{currentThought.content}"
+                &quot;{currentThought.content}&quot;
               </div>
               {isBlurred && (
                 <div className="text-center mb-4">
@@ -329,5 +328,13 @@ export default function ThoughtsPage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function ThoughtsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ThoughtsPageContent />
+    </Suspense>
   )
 } 

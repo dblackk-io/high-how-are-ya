@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.all-unset * {
+  all: unset;
+  display: revert;
+}
+
 :root {
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
@@ -30,9 +35,9 @@ input, textarea {
 }
 
 /* Smooth animations */
-* {
+/* * {
   transition: all 0.2s ease;
-}
+} */
 
 /* Custom gradient text */
 .gradient-text {
@@ -65,4 +70,264 @@ input, textarea {
 
 .glitch {
   animation: glitch 0.3s infinite;
+}
+
+/* SICK ANIMATIONS */
+@keyframes scan {
+  0% { transform: translateX(-100%) }
+  100% { transform: translateX(100%) }
+}
+
+@keyframes electric {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 0, 204, 0.5),
+                0 0 40px rgba(255, 0, 204, 0.3),
+                0 0 60px rgba(255, 0, 204, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(255, 0, 204, 0.8),
+                0 0 60px rgba(255, 0, 204, 0.5),
+                0 0 90px rgba(255, 0, 204, 0.3);
+  }
+}
+
+@keyframes matrix {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes hologram {
+  0%, 100% { 
+    opacity: 0.3;
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% { 
+    opacity: 0.7;
+    filter: hue-rotate(90deg) brightness(1.2);
+  }
+  50% { 
+    opacity: 0.5;
+    filter: hue-rotate(180deg) brightness(0.8);
+  }
+  75% { 
+    opacity: 0.9;
+    filter: hue-rotate(270deg) brightness(1.1);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% { 
+    text-shadow: 0 0 5px #ff00cc,
+                 0 0 10px #ff00cc,
+                 0 0 15px #ff00cc,
+                 0 0 20px #ff00cc;
+  }
+  50% { 
+    text-shadow: 0 0 10px #ff00cc,
+                 0 0 20px #ff00cc,
+                 0 0 30px #ff00cc,
+                 0 0 40px #ff00cc;
+  }
+}
+
+@keyframes cyberpunk {
+  0% { 
+    background: linear-gradient(45deg, #ff00cc, #00ffff, #ff00cc);
+    background-size: 200% 200%;
+  }
+  50% { 
+    background: linear-gradient(45deg, #00ffff, #ff00cc, #00ffff);
+    background-size: 200% 200%;
+  }
+  100% { 
+    background: linear-gradient(45deg, #ff00cc, #00ffff, #ff00cc);
+    background-size: 200% 200%;
+  }
+}
+
+@keyframes lightning {
+  0%, 90%, 100% { opacity: 0; }
+  10%, 80% { opacity: 1; }
+}
+
+@keyframes particleExplosion {
+  0% { 
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% { 
+    transform: scale(3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dataStream {
+  0% { transform: translateY(-100%) rotate(0deg); }
+  100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+@keyframes neuralNetwork {
+  0% { 
+    background-position: 0% 50%;
+    background-size: 100% 100%;
+  }
+  50% { 
+    background-position: 100% 50%;
+    background-size: 200% 200%;
+  }
+  100% { 
+    background-position: 0% 50%;
+    background-size: 100% 100%;
+  }
+}
+
+/* Custom animations for story-style feed */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.8s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Enhanced button hover effects */
+.action-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Background Animation Keyframes */
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+@keyframes lineFloat {
+  0%, 100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(100%);
+    opacity: 0.3;
+  }
+}
+
+/* SICK ANIMATION CLASSES */
+.animate-electric {
+  animation: electric 2s ease-in-out infinite;
+}
+
+.animate-matrix {
+  animation: matrix 3s linear infinite;
+}
+
+.animate-hologram {
+  animation: hologram 4s ease-in-out infinite;
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 1.5s ease-in-out infinite;
+}
+
+.animate-cyberpunk {
+  animation: cyberpunk 3s ease-in-out infinite;
+}
+
+.animate-lightning {
+  animation: lightning 0.5s ease-in-out infinite;
+}
+
+.animate-particle-explosion {
+  animation: particleExplosion 1s ease-out forwards;
+}
+
+.animate-data-stream {
+  animation: dataStream 4s linear infinite;
+}
+
+.animate-neural-network {
+  animation: neuralNetwork 6s ease-in-out infinite;
+}
+
+.animate-scan {
+  animation: scan 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Neon glow effects */
+.neon-glow {
+  box-shadow: 
+    0 0 5px rgba(255, 0, 204, 0.5),
+    0 0 10px rgba(255, 0, 204, 0.3),
+    0 0 15px rgba(255, 0, 204, 0.1);
+}
+
+.neon-glow:hover {
+  box-shadow: 
+    0 0 10px rgba(255, 0, 204, 0.8),
+    0 0 20px rgba(255, 0, 204, 0.5),
+    0 0 30px rgba(255, 0, 204, 0.3);
 }

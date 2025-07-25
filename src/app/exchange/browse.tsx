@@ -41,7 +41,7 @@ export default function BrowsePage() {
 
       {/* Genre Buttons */}
       <div className="flex flex-col gap-8 items-center">
-        {genres.map((genre, index) => (
+        {genres.map((genre) => (
           <button
             key={genre.name}
             onClick={() => router.push(genre.path)}
