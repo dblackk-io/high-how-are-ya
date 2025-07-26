@@ -1431,7 +1431,7 @@ function FeedPageContent() {
                         {/* Strike */}
                         <button
                           onClick={() => {
-                            const currentThought = getCurrentThought();
+                            console.log('Strike clicked, currentThought:', currentThought);
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'strike');
                               nextThought();
@@ -1448,6 +1448,7 @@ function FeedPageContent() {
                         {/* Dido - That's what you were thinking */}
                         <button
                           onClick={() => {
+                            console.log('Dido clicked, currentThought:', currentThought);
                             handleAmplify();
                             nextThought();
                           }}
@@ -1476,7 +1477,7 @@ function FeedPageContent() {
                         {/* Boost */}
                         <button
                           onClick={() => {
-                            const currentThought = getCurrentThought();
+                            console.log('Boost clicked, currentThought:', currentThought);
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'boost');
                               nextThought();
