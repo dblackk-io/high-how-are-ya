@@ -148,8 +148,7 @@ function FeedPageContent() {
     if (currentThought && currentThought.id !== currentThoughtId) {
       setViewStartTime(Date.now());
       setCurrentThoughtId(currentThought.id);
-      // Track initial view
-      trackUserInteraction(currentThought.id, 'view', 0, 0);
+      // Don't auto-track views to prevent infinite loops
     }
   }, [currentIndex, thoughts]);
 
