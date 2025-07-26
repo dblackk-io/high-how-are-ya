@@ -25,7 +25,7 @@ export default function Footer() {
               Privacy
             </Link>
             <Link 
-              href="/exchange/feed?feedback=true" 
+              href="/feedback" 
               className="text-gray-400 hover:text-[#ff00cc] transition-colors"
             >
               Feedback

@@ -152,17 +152,7 @@ function FeedPageContent() {
     setCurrentThoughtId(currentThought.id);
   }, [currentIndex, thoughts, currentThoughtId]);
 
-  // Check for feedback parameter in URL
-  useEffect(() => {
-    const feedbackParam = searchParams.get('feedback');
-    if (feedbackParam === 'true') {
-      setShowFeedbackModal(true);
-      // Remove the feedback parameter from URL
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('feedback');
-      window.history.replaceState({}, '', newUrl.toString());
-    }
-  }, [searchParams]);
+
 
 
 
