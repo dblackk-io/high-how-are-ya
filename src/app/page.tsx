@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Footer from '@/components/Footer'
 
 export default function Home() {
+  console.log("Rendering root page");
   const router = useRouter()
 
   const handleEnter = () => {

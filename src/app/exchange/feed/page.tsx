@@ -144,13 +144,15 @@ function FeedPageContent() {
 
   // Start tracking view time when current thought changes
   useEffect(() => {
+    console.log('effect fired');
     const currentThought = getCurrentThought();
-    if (currentThought && currentThought.id !== currentThoughtId) {
-      setViewStartTime(Date.now());
-      setCurrentThoughtId(currentThought.id);
-      // Don't auto-track views to prevent infinite loops
-    }
-  }, [currentIndex, thoughts]);
+    if (!currentThought) return;
+    if (currentThought.id === currentThoughtId) return; // ✅ prevents loop
+    setViewStartTime(Date.now());
+    setCurrentThoughtId(currentThought.id);
+  }, [currentIndex, thoughts, currentThoughtId]);
+
+
 
   // Recommendation system functions
   const initializeUserProfile = () => {
@@ -179,7 +181,11 @@ function FeedPageContent() {
   };
 
   const trackUserInteraction = async (thoughtId: string, action: 'boost' | 'strike' | 'comment' | 'view', timeSpent?: number, completionRate?: number) => {
-    if (!userProfile) return;
+    // Initialize user profile if it doesn't exist
+    if (!userProfile) {
+      initializeUserProfile();
+      return; // Return this time, next interaction will work
+    }
 
     // Check if user already interacted with this thought (prevent duplicates)
     const existingInteraction = userProfile.engagement_history.find(i => i.thought_id === thoughtId && i.action === action);
@@ -612,8 +618,9 @@ function FeedPageContent() {
   }
 
   const nextThought = () => {
+    console.log('nextThought clicked');
     // Track view completion for current thought
-    const currentThought = getCurrentThought();
+    const currentThought = thoughts[currentIndex];
     if (currentThought && viewStartTime > 0) {
       const timeSpent = Date.now() - viewStartTime;
       const completionRate = timeSpent > 3000 ? 1 : timeSpent / 3000; // 3 seconds = full completion
@@ -633,8 +640,10 @@ function FeedPageContent() {
       setCurrentThoughtId(thoughts[currentIndex + 1]?.id || null);
     } else {
       // No more thoughts, refresh the feed to get new content
-      fetchThoughts(0);
-      setCurrentIndex(0);
+      setTimeout(() => {
+        fetchThoughts(0);
+        setCurrentIndex(0);
+      }, 50);
       setViewStartTime(Date.now());
     }
   }
@@ -644,20 +653,6 @@ function FeedPageContent() {
   const getCurrentThought = () => {
     const thought = thoughts[currentIndex] || null
     if (!thought) return null
-    
-    // Check if thought has 3 or more strikes - if so, skip to next thought
-    const strikes = thoughtMetrics[thought.id]?.strikes || 0
-    if (strikes >= 3) {
-      // Auto-advance to next thought if current one is struck out
-      if (currentIndex < thoughts.length - 1) {
-        nextThought()
-        // Return the next thought directly instead of recursive call
-        return thoughts[currentIndex + 1] || null
-      } else {
-        return null // No more thoughts available
-      }
-    }
-    
     return thought
   }
 
@@ -889,8 +884,6 @@ function FeedPageContent() {
   
 
 
-  const currentThought = getCurrentThought();
-
   // Check if user has seen intro before
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem('high-how-are-ya-intro-seen');
@@ -929,6 +922,8 @@ function FeedPageContent() {
       return () => clearTimeout(timer);
     }
   }, [showIntroModal]);
+
+  const currentThought = getCurrentThought();
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center relative overflow-hidden">
@@ -1338,8 +1333,7 @@ function FeedPageContent() {
                 <div className="relative z-10 max-w-lg mx-8 animate-slideUp">
                   <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-[#ff00cc] rounded-3xl p-6 shadow-2xl relative overflow-hidden" style={{
                     boxShadow: '0 0 40px rgba(255, 0, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                    filter: `blur(${Math.min((thoughtMetrics[currentThought?.id || '']?.strikes || 0) * 0.5, 8)}px)`,
-                    transition: 'filter 0.3s ease'
+                    transition: 'all 0.3s ease'
                   }}>
                     {/* Animated background glow */}
                     <div className="absolute inset-0 bg-gradient-to-r from-[#ff00cc]/5 via-transparent to-purple-600/5 animate-pulse rounded-3xl"></div>
@@ -1440,18 +1434,6 @@ function FeedPageContent() {
                             const currentThought = getCurrentThought();
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'strike');
-                              
-                              // Check if this strike makes it 3 strikes - if so, auto-advance
-                              const currentStrikes = (thoughtMetrics[currentThought.id]?.strikes || 0) + 1
-                              if (currentStrikes >= 3) {
-                                // Add a small delay to show the strike effect
-                                setTimeout(() => {
-                                  // Don't call nextThought() here to avoid double tracking
-                                  // nextThought() will be called by the swipe gesture or navigation
-                                }, 500)
-                              }
-                              // Don't call nextThought() here to avoid double tracking
-                              // nextThought() will be called by the swipe gesture or navigation
                             }
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-red-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium"
