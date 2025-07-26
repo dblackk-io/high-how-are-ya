@@ -832,8 +832,8 @@ function FeedPageContent() {
         )
       );
 
-      // Move to next thought (user won't see this one again)
-      nextThought();
+      // Don't call nextThought() here to avoid double tracking
+      // nextThought() will be called by the swipe gesture or navigation
 
     } catch (error) {
       console.error('Error amplifying thought:', error);
@@ -1446,13 +1446,12 @@ function FeedPageContent() {
                               if (currentStrikes >= 3) {
                                 // Add a small delay to show the strike effect
                                 setTimeout(() => {
-                                  nextThought()
+                                  // Don't call nextThought() here to avoid double tracking
+                                  // nextThought() will be called by the swipe gesture or navigation
                                 }, 500)
-                              } else {
-                                nextThought()
                               }
-                            } else {
-                              nextThought()
+                              // Don't call nextThought() here to avoid double tracking
+                              // nextThought() will be called by the swipe gesture or navigation
                             }
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-red-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium"
@@ -1495,7 +1494,8 @@ function FeedPageContent() {
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'boost');
                             }
-                            nextThought();
+                            // Don't call nextThought() here to avoid double tracking
+                            // nextThought() will be called by the swipe gesture or navigation
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-green-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium"
                         >
