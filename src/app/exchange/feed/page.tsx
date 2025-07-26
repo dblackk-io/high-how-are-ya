@@ -651,7 +651,8 @@ function FeedPageContent() {
       // Auto-advance to next thought if current one is struck out
       if (currentIndex < thoughts.length - 1) {
         nextThought()
-        return getCurrentThought() // Recursively get next thought
+        // Return the next thought directly instead of recursive call
+        return thoughts[currentIndex + 1] || null
       } else {
         return null // No more thoughts available
       }
