@@ -1094,7 +1094,7 @@ function FeedPageContent() {
                     </div>
                   </div>
                   <div>
-                    <div className="font-semibold text-white">Dido</div>
+                                            <div className="font-semibold text-white">Ditto</div>
                                             <div className="text-sm">That&apos;s what you were thinking</div>
                   </div>
                 </div>
@@ -1143,7 +1143,7 @@ function FeedPageContent() {
                   </div>
                   <div className="p-4 bg-gray-800/30 rounded-xl border border-gray-700 text-center">
                     <div className="text-2xl font-bold text-purple-400">{currentThought?.amplify_count || 0}</div>
-                    <div className="text-sm text-gray-400">Didos</div>
+                    <div className="text-sm text-gray-400">Dittos</div>
                   </div>
                 </div>
                 
@@ -1332,8 +1332,8 @@ function FeedPageContent() {
                 </div>
                 
                 {/* Enhanced Thought Card */}
-                <div className="relative z-10 max-w-lg mx-4 sm:mx-8 animate-slideUp">
-                  <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-[#ff00cc] rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden" style={{
+                <div className="relative z-10 w-full max-w-sm sm:max-w-lg mx-2 sm:mx-8 animate-slideUp">
+                  <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-[#ff00cc] rounded-3xl p-3 sm:p-6 shadow-2xl relative overflow-hidden" style={{
                     boxShadow: '0 0 40px rgba(255, 0, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                     transition: 'all 0.3s ease'
                   }}>
@@ -1408,7 +1408,7 @@ function FeedPageContent() {
                     <div className="mb-6 relative z-10">
 
                       
-                      <p className="text-2xl text-white leading-relaxed font-light transition-all duration-500" style={{ 
+                      <p className="text-lg sm:text-2xl text-white leading-relaxed font-light transition-all duration-500" style={{ 
                         fontFamily: 'Inter, sans-serif',
                         textShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
                         transform: 'scale(1)',
@@ -1447,17 +1447,17 @@ function FeedPageContent() {
                           <span className="text-sm">Strike</span>
                         </button>
 
-                        {/* Dido - That's what you were thinking */}
+                        {/* Ditto - That's what you were thinking */}
                         <button
                           onClick={() => {
-                            console.log('Dido clicked, currentThought:', currentThought);
+                            console.log('Ditto clicked, currentThought:', currentThought);
                             handleAmplify();
                             nextThought();
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-purple-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium group relative"
                         >
                           <div className="relative w-8 h-8">
-                            {/* Dido icon - two circles connected by line with dots */}
+                            {/* Ditto icon - two circles connected by line with dots */}
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               {/* Left circle */}
                               <circle cx="6" cy="12" r="2" fill="currentColor"/>
@@ -1470,10 +1470,10 @@ function FeedPageContent() {
                               {/* Right dot extending from right circle */}
                               <circle cx="20" cy="12" r="0.5" fill="currentColor"/>
                             </svg>
-                            {/* Dido pulse effect */}
+                            {/* Ditto pulse effect */}
                             <div className="absolute inset-0 bg-purple-400/30 rounded-full animate-ping"></div>
                           </div>
-                          <span className="text-sm">Dido</span>
+                          <span className="text-sm">Ditto</span>
                         </button>
 
                         {/* Boost */}
@@ -1571,14 +1571,14 @@ function FeedPageContent() {
                 </div>
 
                 {/* Navigation Hint */}
-                <div className="absolute bottom-8 left-8 text-gray-500 text-sm animate-pulse">
+                <div className="absolute bottom-20 left-4 sm:left-8 text-gray-500 text-sm animate-pulse">
                   ← Swipe or use buttons below
                 </div>
                 
                 {/* Next Button */}
                 <button
                   onClick={nextThought}
-                  className="absolute bottom-8 right-8 bg-[#ff00cc] text-black px-6 py-3 rounded-full font-bold hover:bg-[#ff33cc] transition-all duration-300 shadow-lg"
+                  className="absolute bottom-20 right-4 sm:right-8 bg-[#ff00cc] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold hover:bg-[#ff33cc] transition-all duration-300 shadow-lg text-sm sm:text-base"
                 >
                   Next
                 </button>
