@@ -26,8 +26,8 @@ export default function ThoughtSubmit({ isOpen, onClose, onSubmit }: ThoughtSubm
       setVibe('')
       setNsfw(false)
       onClose()
-    } catch (error) {
-      // Error handling for thought submission
+    } catch (err) {
+      console.error('Error submitting thought:', err);
     } finally {
       setIsSubmitting(false)
     }

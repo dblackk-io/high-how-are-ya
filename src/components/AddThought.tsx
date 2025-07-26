@@ -79,7 +79,8 @@ export default function AddThought({ onThoughtAdded }: AddThoughtProps) {
       // Clear success message after 2 seconds
       setTimeout(() => setMessage(''), 2000);
 
-    } catch (error) {
+    } catch (err) {
+      console.error('Error submitting thought:', err);
       setMessage('Failed to post. Try again.');
     } finally {
       setIsSubmitting(false);

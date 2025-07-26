@@ -19,7 +19,7 @@ const REPORT_REASONS = [
   'Other'
 ]
 
-export default function ReportModal({ isOpen, onClose, thoughtId, thoughtContent }: ReportModalProps) {
+export default function ReportModal({ isOpen, onClose, thoughtId }: ReportModalProps) {
   const [selectedReason, setSelectedReason] = useState('')
   const [additionalDetails, setAdditionalDetails] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -56,8 +56,8 @@ export default function ReportModal({ isOpen, onClose, thoughtId, thoughtContent
         setAdditionalDetails('')
       }, 2000)
 
-    } catch (error) {
-      // Error handling for report submission
+    } catch (err) {
+      console.error('Error submitting report:', err);
     } finally {
       setIsSubmitting(false)
     }

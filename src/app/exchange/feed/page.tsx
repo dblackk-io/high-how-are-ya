@@ -241,10 +241,10 @@ function FeedPageContent() {
         ]);
 
       if (error) {
-        // Error handling for database interaction
+        console.error('Database interaction error:', error);
       }
-    } catch (error) {
-      // Error handling for interaction saving
+    } catch (err) {
+      console.error('Interaction saving error:', err);
     }
     
     // Check if user has seen 10 thoughts and show feedback modal
@@ -422,7 +422,8 @@ function FeedPageContent() {
 
       await audio.play();
       
-    } catch (error) {
+    } catch (err) {
+      console.error('Voice error:', err);
       setIsSpeaking(false);
       setIsLoadingVoice(false);
       setCurrentAudio(null);
@@ -475,7 +476,8 @@ function FeedPageContent() {
       }));
 
       return stats;
-    } catch (error) {
+    } catch (err) {
+      console.error('Fetch stats error:', err);
       return { views: 0, boosts: 0, strikes: 0, comments: 0 };
     }
   };

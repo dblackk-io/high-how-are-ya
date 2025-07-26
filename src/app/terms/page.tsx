@@ -69,7 +69,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">6. Disclaimers</h2>
             <p>
-              The platform is provided "as is" without warranties. We are not responsible for the accuracy, completeness,
+              The platform is provided &quot;as is&quot; without warranties. We are not responsible for the accuracy, completeness,
               or usefulness of any content posted by users.
             </p>
           </section>
@@ -101,7 +101,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">10. Contact</h2>
             <p>
-              If you have questions about these terms, please contact us through the platform's feedback system.
+              If you have questions about these terms, please contact us through the platform&apos;s feedback system.
             </p>
           </section>
         </div>

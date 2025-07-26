@@ -95,7 +95,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-4">8. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">8. Children&apos;s Privacy</h2>
             <p>
               This platform is not intended for children under 13. We do not knowingly collect information from children
               under 13. If you are a parent and believe your child has provided information, please contact us.
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">11. Contact Us</h2>
             <p>
-              If you have questions about this privacy policy, please contact us through the platform's feedback system.
+              If you have questions about this privacy policy, please contact us through the platform&apos;s feedback system.
             </p>
           </section>
         </div>
