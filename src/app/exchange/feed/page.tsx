@@ -997,19 +997,19 @@ function FeedPageContent() {
       </div>
       
       {/* Header */}
-      <div className="w-full max-w-4xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black neon-title uppercase tracking-tight" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black neon-title uppercase tracking-tight" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.04em' }}>
               What&apos;s Everyone Thinking
             </h1>
-            <p className="text-lg text-gray-400 mt-2">
+            <p className="text-lg text-gray-400 mt-2 hidden sm:block">
               {getTopicDisplay()}
             </p>
           </div>
           <button
             onClick={() => router.push('/exchange/topics')}
-            className="neon-btn text-lg px-6 py-3 font-bold rounded-lg uppercase tracking-wider"
+            className="neon-btn text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3 font-bold rounded-lg uppercase tracking-wider"
             style={{
               background: 'transparent',
               borderColor: '#666',
@@ -1332,8 +1332,8 @@ function FeedPageContent() {
                 </div>
                 
                 {/* Enhanced Thought Card */}
-                <div className="relative z-10 max-w-lg mx-8 animate-slideUp">
-                  <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-[#ff00cc] rounded-3xl p-6 shadow-2xl relative overflow-hidden" style={{
+                <div className="relative z-10 max-w-lg mx-4 sm:mx-8 animate-slideUp">
+                  <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-[#ff00cc] rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden" style={{
                     boxShadow: '0 0 40px rgba(255, 0, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                     transition: 'all 0.3s ease'
                   }}>
