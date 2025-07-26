@@ -152,6 +152,18 @@ function FeedPageContent() {
     setCurrentThoughtId(currentThought.id);
   }, [currentIndex, thoughts, currentThoughtId]);
 
+  // Check for feedback parameter in URL
+  useEffect(() => {
+    const feedbackParam = searchParams.get('feedback');
+    if (feedbackParam === 'true') {
+      setShowFeedbackModal(true);
+      // Remove the feedback parameter from URL
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('feedback');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [searchParams]);
+
 
 
   // Recommendation system functions
@@ -657,7 +669,7 @@ function FeedPageContent() {
   }
 
   const getTopicDisplay = () => {
-    if (topics.length === 0) return 'No topics selected'
+    if (topics.length === 0) return 'Live feed'
     return topics.join(', ')
   }
 

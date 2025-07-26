@@ -24,15 +24,12 @@ export default function Footer() {
             >
               Privacy
             </Link>
-            <button 
-              onClick={() => {
-                // Open feedback modal or redirect to feedback
-                window.location.href = '/exchange/feed?feedback=true'
-              }}
+            <Link 
+              href="/exchange/feed?feedback=true" 
               className="text-gray-400 hover:text-[#ff00cc] transition-colors"
             >
               Feedback
-            </button>
+            </Link>
           </div>
         </div>
       </div>
