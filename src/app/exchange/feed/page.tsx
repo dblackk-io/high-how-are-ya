@@ -1434,6 +1434,7 @@ function FeedPageContent() {
                             const currentThought = getCurrentThought();
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'strike');
+                              nextThought();
                             }
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-red-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium"
@@ -1446,7 +1447,10 @@ function FeedPageContent() {
 
                         {/* Dido - That's what you were thinking */}
                         <button
-                          onClick={handleAmplify}
+                          onClick={() => {
+                            handleAmplify();
+                            nextThought();
+                          }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-purple-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium group relative"
                         >
                           <div className="relative w-8 h-8">
@@ -1475,9 +1479,8 @@ function FeedPageContent() {
                             const currentThought = getCurrentThought();
                             if (currentThought) {
                               trackUserInteraction(currentThought.id, 'boost');
+                              nextThought();
                             }
-                            // Don't call nextThought() here to avoid double tracking
-                            // nextThought() will be called by the swipe gesture or navigation
                           }}
                           className="flex flex-col items-center space-y-2 text-white hover:text-green-400 transition-colors p-4 rounded-xl hover:bg-gray-800/50 font-medium"
                         >
