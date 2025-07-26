@@ -889,6 +889,45 @@ function FeedPageContent() {
 
   const currentThought = getCurrentThought();
 
+  // Check if user has seen intro before
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem('high-how-are-ya-intro-seen');
+    if (hasSeenIntro === 'true') {
+      setShowIntroModal(false);
+    }
+  }, []);
+
+  const handleCloseIntroModal = () => {
+    setShowIntroModal(false);
+    localStorage.setItem('high-how-are-ya-intro-seen', 'true');
+  };
+
+  // Handle escape key to close intro modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showIntroModal) {
+        handleCloseIntroModal();
+      }
+    };
+
+    if (showIntroModal) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [showIntroModal]);
+
+  // Auto-close intro modal after 30 seconds as fallback
+  useEffect(() => {
+    if (showIntroModal) {
+      const timer = setTimeout(() => {
+        console.log('Auto-closing intro modal after timeout');
+        handleCloseIntroModal();
+      }, 30000); // 30 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [showIntroModal]);
+
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center relative overflow-hidden">
       {/* Animated Background */}
@@ -986,8 +1025,24 @@ function FeedPageContent() {
 
       {/* Intro Modal */}
       {showIntroModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center animate-fadeIn">
-          <div className="bg-black/90 border border-gray-800 rounded-3xl p-8 max-w-md mx-4 animate-slideUp">
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center" 
+          style={{ animation: 'fadeIn 0.3s ease-out' }}
+          onClick={handleCloseIntroModal}
+        >
+          <div 
+            className="bg-black/90 border border-gray-800 rounded-3xl p-8 max-w-md mx-4 relative" 
+            style={{ animation: 'slideUp 0.3s ease-out' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button for emergency */}
+            <button
+              onClick={handleCloseIntroModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold"
+              style={{ zIndex: 60 }}
+            >
+              ×
+            </button>
             <div className="text-center">
               <h2 className="text-2xl font-bold text-white mb-6">Welcome to Thought Flow</h2>
               
@@ -1049,9 +1104,7 @@ function FeedPageContent() {
               </div>
               
               <button
-                onClick={() => {
-                  setShowIntroModal(false);
-                }}
+                onClick={handleCloseIntroModal}
                 className="mt-8 px-8 py-3 bg-[#ff00cc] text-black font-bold rounded-full hover:bg-[#ff33cc] transition-all duration-300 hover:scale-105"
               >
                 Let&apos;s Go! 🚀
