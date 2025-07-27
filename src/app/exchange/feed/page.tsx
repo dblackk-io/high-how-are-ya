@@ -1506,7 +1506,7 @@ function FeedPageContent() {
 
 
 
-                        {/* Voice Settings */}
+                        {/* Voice Selection */}
                         <button
                           onClick={() => setShowVoicePanel(!showVoicePanel)}
                           className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30"
@@ -1514,7 +1514,7 @@ function FeedPageContent() {
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                           </svg>
-                          <span className="text-xs">Settings</span>
+                          <span className="text-xs">Voices</span>
                         </button>
 
                         {/* Speak Button */}
@@ -1671,54 +1671,92 @@ function FeedPageContent() {
             </div>
             <div className="flex-1 overflow-y-auto p-6">
                               <div className="text-center text-gray-400 py-8">
-                  <h3 className="text-xl font-bold text-white mb-4">Voice Settings</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">Voices</h3>
                 
                 {/* Voice Selection */}
-                <div className="mb-6">
-                  <h4 className="text-white font-semibold mb-3">Voice</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(GOOGLE_VOICE_OPTIONS).map(([name, config]) => (
-                      <button
-                        key={name}
-                        onClick={() => setSelectedVoice(name)}
-                        className={`p-3 rounded-lg text-center transition-all ${
-                          selectedVoice === name
-                            ? 'bg-[#ff00cc] text-white'
-                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                        }`}
-                      >
-                        <div className="font-medium capitalize">{name}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => setSelectedVoice('rachel')}
+                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                      selectedVoice === 'rachel'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">👩‍💼</span>
+                    <div>
+                      <div className="font-semibold">Rachel</div>
+                      <div className="text-sm opacity-75">Professional & Warm</div>
+                    </div>
+                  </button>
 
-                {/* Style Selection */}
-                <div className="mb-6">
-                  <h4 className="text-white font-semibold mb-3">Style</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {Object.keys(GOOGLE_VOICE_STYLES).map((style) => (
-                      <button
-                        key={style}
-                        onClick={() => setVoiceStyle(style as keyof typeof GOOGLE_VOICE_STYLES)}
-                        className={`p-3 rounded-lg text-center transition-all capitalize ${
-                          voiceStyle === style
-                            ? 'bg-[#ff00cc] text-white'
-                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                        }`}
-                      >
-                        {style}
-                      </button>
-                    ))}
-                  </div>
+                  <button
+                    onClick={() => setSelectedVoice('callum')}
+                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                      selectedVoice === 'callum'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">👨‍💂</span>
+                    <div>
+                      <div className="font-semibold">Callum</div>
+                      <div className="text-sm opacity-75">British & Sophisticated</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('charlotte')}
+                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                      selectedVoice === 'charlotte'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">👩‍🎭</span>
+                    <div>
+                      <div className="font-semibold">Charlotte</div>
+                      <div className="text-sm opacity-75">Sassy & Dramatic</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('daniel')}
+                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                      selectedVoice === 'daniel'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">🤪</span>
+                    <div>
+                      <div className="font-semibold">Daniel</div>
+                      <div className="text-sm opacity-75">Goofy & Expressive</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('arnold')}
+                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                      selectedVoice === 'arnold'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">💪</span>
+                    <div>
+                      <div className="font-semibold">Arnold</div>
+                      <div className="text-sm opacity-75">Deep & Powerful</div>
+                    </div>
+                  </button>
                 </div>
 
                 {/* Apply Button */}
                 <button
                   onClick={() => setShowVoicePanel(false)}
-                  className="w-full bg-[#ff00cc] text-white py-3 rounded-lg font-semibold hover:bg-[#ff00cc]/80 transition-colors"
+                  className="w-full bg-[#ff00cc] text-white py-3 rounded-lg font-semibold hover:bg-[#ff00cc]/80 transition-colors mt-6"
                 >
-                  Apply Settings
+                  Apply
                 </button>
               </div>
             </div>
