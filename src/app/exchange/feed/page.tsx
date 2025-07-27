@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase, Comment, getSessionId } from '@/lib/supabase'
-import { voiceService, VOICE_STYLES } from '@/lib/voice-service'
+import { googleVoiceService, GOOGLE_VOICE_OPTIONS, GOOGLE_VOICE_STYLES } from '@/lib/google-voice-service'
 import ThoughtSubmit from '@/components/ThoughtSubmit'
 import ReportModal from '@/components/ReportModal'
 
@@ -90,7 +90,7 @@ function FeedPageContent() {
   const [currentThoughtId, setCurrentThoughtId] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<string>('rachel');
-  const [voiceStyle, setVoiceStyle] = useState<keyof typeof VOICE_STYLES>('normal');
+  const [voiceStyle, setVoiceStyle] = useState<keyof typeof GOOGLE_VOICE_STYLES>('normal');
   const [showVoicePanel, setShowVoicePanel] = useState(false);
   const [isLoadingVoice, setIsLoadingVoice] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -397,7 +397,7 @@ function FeedPageContent() {
       }
 
       // Synthesize speech using ElevenLabs
-      const audioBuffer = await voiceService.synthesizeSpeech(
+      const audioBuffer = await googleVoiceService.synthesizeSpeech(
         currentThought.content,
         selectedVoice, // Pass the voice name directly
         voiceStyle
@@ -424,7 +424,7 @@ function FeedPageContent() {
         setCurrentAudio(null);
         URL.revokeObjectURL(audioUrl);
         // Fallback to Web Speech API
-        voiceService.fallbackSpeak(currentThought.content);
+        googleVoiceService.fallbackSpeak(currentThought.content);
       };
 
       await audio.play();
@@ -436,7 +436,7 @@ function FeedPageContent() {
       setCurrentAudio(null);
       
       // Fallback to Web Speech API
-      voiceService.fallbackSpeak(currentThought.content);
+              googleVoiceService.fallbackSpeak(currentThought.content);
     }
   };
 
@@ -1520,15 +1520,10 @@ function FeedPageContent() {
 
 
 
-                        {/* Voice */}
+                        {/* Voice - Coming Soon */}
                         <button
                           onClick={() => setShowVoicePanel(!showVoicePanel)}
-                          className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 ${
-                            showVoicePanel 
-                              ? 'text-[#ff00cc] bg-[#ff00cc]/10' 
-                              : 'text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30'
-                          }`}
-                          disabled={isSpeaking}
+                          className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
@@ -1536,23 +1531,14 @@ function FeedPageContent() {
                           <span className="text-xs">Voice</span>
                         </button>
 
-                        {/* Speak */}
                         <button
-                          onClick={isSpeaking ? stopSpeaking : speakThought}
-                          className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 ${
-                            isSpeaking 
-                              ? 'text-red-400 hover:text-red-300 bg-red-500/10' 
-                              : 'text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30'
-                          }`}
+                          onClick={() => setShowVoicePanel(true)}
+                          className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {isSpeaking ? (
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-                            ) : (
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                            )}
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                           </svg>
-                          <span className="text-xs">{isSpeaking ? 'Stop' : 'Speak'}</span>
+                          <span className="text-xs">Speak</span>
                         </button>
 
                         {/* Stats */}
@@ -1677,7 +1663,7 @@ function FeedPageContent() {
         </div>
       )}
 
-      {/* TikTok-Style Voice Panel */}
+      {/* TikTok-Style Voice Panel - Coming Soon */}
       {showVoicePanel && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end" onClick={(e) => {
           if (e.target === e.currentTarget) {
@@ -1685,7 +1671,6 @@ function FeedPageContent() {
           }
         }}>
           <div className="w-full bg-black/95 border-t border-gray-800 rounded-t-3xl animate-slideUp h-[70vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-800 flex-shrink-0">
               <h3 className="text-xl font-bold text-white">Voice Effects</h3>
               <button
@@ -1697,83 +1682,67 @@ function FeedPageContent() {
                 </svg>
               </button>
             </div>
-
-
-
-            {/* Professional Voice Selection */}
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="space-y-4">
-                {/* Voice Categories */}
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { id: 'rachel', name: 'Rachel', category: 'Professional', style: 'normal' },
-                    { id: 'daniel', name: 'Daniel', category: 'Casual', style: 'goofy' },
-                    { id: 'charlotte', name: 'Charlotte', category: 'Sophisticated', style: 'sassy' },
-                    { id: 'emily', name: 'Emily', category: 'Energetic', style: 'bubbly' },
-                    { id: 'antoni', name: 'Antoni', category: 'Dramatic', style: 'dramatic' },
-                    { id: 'thomas', name: 'Thomas', category: 'Smooth', style: 'normal' },
-                    { id: 'josh', name: 'Josh', category: 'Dynamic', style: 'excited' },
-                    { id: 'arnold', name: 'Arnold', category: 'Powerful', style: 'dramatic' },
-                    { id: 'sam', name: 'Sam', category: 'Relaxed', style: 'normal' },
-                    { id: 'callum', name: 'Callum', category: 'British', style: 'calm' },
-                    { id: 'serena', name: 'Serena', category: 'Calm', style: 'calm' },
-                    { id: 'mike', name: 'Mike', category: 'Neutral', style: 'deadpan' },
-                  ].map((voice) => (
-                    <button
-                      key={voice.id}
-                                          onClick={() => {
-                      setSelectedVoice(voice.id);
-                      setVoiceStyle(voice.style as keyof typeof VOICE_STYLES);
-                    }}
-                      className={`relative p-4 rounded-xl transition-all duration-300 border ${
-                        selectedVoice === voice.id
-                          ? 'bg-gradient-to-br from-[#ff00cc]/20 to-pink-500/20 border-[#ff00cc] text-white shadow-lg'
-                          : 'bg-gray-800/50 border-gray-700 text-gray-300 hover:bg-gray-700/50 hover:border-gray-600'
-                      }`}
-                      disabled={isSpeaking}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="text-left">
-                          <div className="font-semibold text-sm">{voice.name}</div>
-                          <div className="text-xs text-gray-400">{voice.category}</div>
-                        </div>
-                        <div className={`w-3 h-3 rounded-full ${
-                          selectedVoice === voice.id 
-                            ? 'bg-[#ff00cc] shadow-lg shadow-[#ff00cc]/50' 
-                            : 'bg-gray-600'
-                        }`}></div>
-                      </div>
-                    </button>
-                  ))}
+              <div className="text-center text-gray-400 py-8">
+                <div className="text-4xl mb-4">🎤</div>
+                <h3 className="text-xl font-bold text-white mb-2">Voice Features</h3>
+                <p className="text-gray-400 mb-4">Choose your voice and style to hear thoughts aloud.</p>
+                
+                {/* Voice Selection */}
+                <div className="mb-6">
+                  <h4 className="text-white font-semibold mb-3">Select Voice</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(GOOGLE_VOICE_OPTIONS).map(([name, config]) => (
+                      <button
+                        key={name}
+                        onClick={() => setSelectedVoice(name)}
+                        className={`p-3 rounded-lg text-left transition-all ${
+                          selectedVoice === name
+                            ? 'bg-[#ff00cc] text-white'
+                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        }`}
+                      >
+                        <div className="font-medium capitalize">{name}</div>
+                        <div className="text-xs opacity-75">{config.name}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Test Controls */}
-            <div className="p-4 border-t border-gray-800 space-y-3">
-              {/* Test/Stop Button */}
-              <button
-                onClick={isSpeaking ? stopSpeaking : speakThought}
-                disabled={isLoadingVoice && !isSpeaking}
-                className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 ${
-                  isSpeaking 
-                    ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700' 
-                    : 'bg-gradient-to-r from-[#ff00cc] to-pink-500 text-white hover:from-[#ff33cc] hover:to-pink-400'
-                }`}
-              >
-                {isLoadingVoice && !isSpeaking ? 'Generating...' : isSpeaking ? 'Stop Test' : 'Test Voice'}
-              </button>
-              
-              {/* Apply Button */}
-              <button
-                onClick={() => {
-                  setShowVoicePanel(false);
-                  // Voice is already applied when selected, just close the panel
-                }}
-                className="w-full bg-gradient-to-r from-gray-700 to-gray-800 text-white py-3 rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300 border border-gray-600"
-              >
-                Apply & Close
-              </button>
+                {/* Style Selection */}
+                <div className="mb-6">
+                  <h4 className="text-white font-semibold mb-3">Select Style</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.keys(GOOGLE_VOICE_STYLES).map((style) => (
+                      <button
+                        key={style}
+                        onClick={() => setVoiceStyle(style as keyof typeof GOOGLE_VOICE_STYLES)}
+                        className={`p-3 rounded-lg text-left transition-all capitalize ${
+                          voiceStyle === style
+                            ? 'bg-[#ff00cc] text-white'
+                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        }`}
+                      >
+                        {style}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Test Button */}
+                <button
+                  onClick={() => {
+                    const currentThought = getCurrentThought();
+                    if (currentThought) {
+                      speakThought();
+                    }
+                    setShowVoicePanel(false);
+                  }}
+                  className="w-full bg-[#ff00cc] text-white py-3 rounded-lg font-semibold hover:bg-[#ff00cc]/80 transition-colors"
+                >
+                  Test Voice
+                </button>
+              </div>
             </div>
           </div>
         </div>

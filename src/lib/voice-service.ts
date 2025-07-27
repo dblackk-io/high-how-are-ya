@@ -47,11 +47,10 @@ export const VOICE_STYLES = {
 };
 
 class VoiceService {
-  private apiKey: string | undefined;
   private baseUrl: string = 'https://api.elevenlabs.io/v1';
 
   constructor() {
-    this.apiKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
+    // API key is handled server-side in the API route
   }
   async synthesizeSpeech(
     text: string, 
@@ -82,26 +81,15 @@ class VoiceService {
       console.log('Falling back to browser speech synthesis...');
       this.fallbackSpeak(text, voiceName);
       
-      throw new Error(`Voice synthesis failed: ${axiosError.response?.data?.detail || axiosError.message}`);
+      // Don't throw error, just return empty buffer so fallback works
+      return new ArrayBuffer(0);
     }
   }
 
   async getAvailableVoices(): Promise<{ voice_id: string; name: string; category: string }[]> {
-    if (!this.apiKey) {
-      return [];
-    }
-
-    try {
-      const response = await axios.get(`${this.baseUrl}/voices`, {
-        headers: {
-          'xi-api-key': this.apiKey
-        }
-      });
-      return response.data.voices;
-    } catch (error) {
-      console.error('Failed to fetch voices:', error);
-      return [];
-    }
+    // This would need a server-side API route to work properly
+    // For now, return empty array - voices are hardcoded in the UI
+    return [];
   }
 
   // Fallback to Web Speech API if ElevenLabs fails
