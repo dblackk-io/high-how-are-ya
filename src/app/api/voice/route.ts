@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GOOGLE_CLOUD_API_KEY}`
+          'X-Goog-Api-Key': process.env.GOOGLE_CLOUD_API_KEY
         }
       }
     );
