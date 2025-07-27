@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase, Comment, getSessionId } from '@/lib/supabase'
-import { googleVoiceService, GOOGLE_VOICE_OPTIONS, GOOGLE_VOICE_STYLES } from '@/lib/google-voice-service'
+import { googleVoiceService } from '@/lib/google-voice-service'
 import ThoughtSubmit from '@/components/ThoughtSubmit'
 import ReportModal from '@/components/ReportModal'
 
@@ -89,7 +89,6 @@ function FeedPageContent() {
   const [viewStartTime, setViewStartTime] = useState<number>(0);
   const [currentThoughtId, setCurrentThoughtId] = useState<string | null>(null);
   const [selectedVoice, setSelectedVoice] = useState<string>('rachel');
-  const [voiceStyle, setVoiceStyle] = useState<keyof typeof GOOGLE_VOICE_STYLES>('normal');
   const [showVoicePanel, setShowVoicePanel] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
@@ -394,8 +393,7 @@ function FeedPageContent() {
       // Synthesize speech using Google Cloud TTS
       const audioBuffer = await googleVoiceService.synthesizeSpeech(
         currentThought.content,
-        selectedVoice,
-        voiceStyle
+        selectedVoice
       );
 
       // Create audio element and play
