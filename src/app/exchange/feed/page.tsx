@@ -1506,7 +1506,7 @@ function FeedPageContent() {
 
 
 
-                        {/* Voice - Coming Soon */}
+                        {/* Voice Settings */}
                         <button
                           onClick={() => setShowVoicePanel(!showVoicePanel)}
                           className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30"
@@ -1514,11 +1514,12 @@ function FeedPageContent() {
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                           </svg>
-                          <span className="text-xs">Voice</span>
+                          <span className="text-xs">Settings</span>
                         </button>
 
+                        {/* Speak Button */}
                         <button
-                          onClick={() => setShowVoicePanel(true)}
+                          onClick={speakThought}
                           className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-[#ff00cc] hover:bg-gray-800/30"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1669,27 +1670,24 @@ function FeedPageContent() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="text-center text-gray-400 py-8">
-                <div className="text-4xl mb-4">🎤</div>
-                <h3 className="text-xl font-bold text-white mb-2">Voice Features</h3>
-                <p className="text-gray-400 mb-4">Choose your voice and style to hear thoughts aloud.</p>
+                              <div className="text-center text-gray-400 py-8">
+                  <h3 className="text-xl font-bold text-white mb-4">Voice Settings</h3>
                 
                 {/* Voice Selection */}
                 <div className="mb-6">
-                  <h4 className="text-white font-semibold mb-3">Select Voice</h4>
+                  <h4 className="text-white font-semibold mb-3">Voice</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.entries(GOOGLE_VOICE_OPTIONS).map(([name, config]) => (
                       <button
                         key={name}
                         onClick={() => setSelectedVoice(name)}
-                        className={`p-3 rounded-lg text-left transition-all ${
+                        className={`p-3 rounded-lg text-center transition-all ${
                           selectedVoice === name
                             ? 'bg-[#ff00cc] text-white'
                             : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                         }`}
                       >
                         <div className="font-medium capitalize">{name}</div>
-                        <div className="text-xs opacity-75">{config.name}</div>
                       </button>
                     ))}
                   </div>
@@ -1697,13 +1695,13 @@ function FeedPageContent() {
 
                 {/* Style Selection */}
                 <div className="mb-6">
-                  <h4 className="text-white font-semibold mb-3">Select Style</h4>
+                  <h4 className="text-white font-semibold mb-3">Style</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.keys(GOOGLE_VOICE_STYLES).map((style) => (
                       <button
                         key={style}
                         onClick={() => setVoiceStyle(style as keyof typeof GOOGLE_VOICE_STYLES)}
-                        className={`p-3 rounded-lg text-left transition-all capitalize ${
+                        className={`p-3 rounded-lg text-center transition-all capitalize ${
                           voiceStyle === style
                             ? 'bg-[#ff00cc] text-white'
                             : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -1715,18 +1713,12 @@ function FeedPageContent() {
                   </div>
                 </div>
 
-                {/* Test Button */}
+                {/* Apply Button */}
                 <button
-                  onClick={() => {
-                    const currentThought = getCurrentThought();
-                    if (currentThought) {
-                      speakThought();
-                    }
-                    setShowVoicePanel(false);
-                  }}
+                  onClick={() => setShowVoicePanel(false)}
                   className="w-full bg-[#ff00cc] text-white py-3 rounded-lg font-semibold hover:bg-[#ff00cc]/80 transition-colors"
                 >
-                  Test Voice
+                  Apply Settings
                 </button>
               </div>
             </div>
