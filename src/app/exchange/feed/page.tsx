@@ -88,11 +88,9 @@ function FeedPageContent() {
   const [thoughtMetrics, setThoughtMetrics] = useState<{ [thoughtId: string]: { views: number; boosts: number; strikes: number; comments: number } }>({});
   const [viewStartTime, setViewStartTime] = useState<number>(0);
   const [currentThoughtId, setCurrentThoughtId] = useState<string | null>(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<string>('rachel');
   const [voiceStyle, setVoiceStyle] = useState<keyof typeof GOOGLE_VOICE_STYLES>('normal');
   const [showVoicePanel, setShowVoicePanel] = useState(false);
-  const [isLoadingVoice, setIsLoadingVoice] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -387,19 +385,16 @@ function FeedPageContent() {
     // Stop any currently playing audio
     stopSpeaking();
     
-    setIsSpeaking(true);
-    setIsLoadingVoice(true);
-    
     try {
       // Cancel any existing speech
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
 
-      // Synthesize speech using ElevenLabs
+      // Synthesize speech using Google Cloud TTS
       const audioBuffer = await googleVoiceService.synthesizeSpeech(
         currentThought.content,
-        selectedVoice, // Pass the voice name directly
+        selectedVoice,
         voiceStyle
       );
 
@@ -412,15 +407,11 @@ function FeedPageContent() {
       setCurrentAudio(audio);
       
       audio.onended = () => {
-        setIsSpeaking(false);
-        setIsLoadingVoice(false);
         setCurrentAudio(null);
         URL.revokeObjectURL(audioUrl);
       };
 
       audio.onerror = () => {
-        setIsSpeaking(false);
-        setIsLoadingVoice(false);
         setCurrentAudio(null);
         URL.revokeObjectURL(audioUrl);
         // Fallback to Web Speech API
@@ -431,17 +422,15 @@ function FeedPageContent() {
       
     } catch (err) {
       console.error('Voice error:', err);
-      setIsSpeaking(false);
-      setIsLoadingVoice(false);
       setCurrentAudio(null);
       
       // Fallback to Web Speech API
-              googleVoiceService.fallbackSpeak(currentThought.content);
+      googleVoiceService.fallbackSpeak(currentThought.content);
     }
   };
 
   const stopSpeaking = () => {
-    // Stop ElevenLabs audio
+    // Stop Google Cloud TTS audio
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
@@ -452,9 +441,6 @@ function FeedPageContent() {
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    
-    setIsSpeaking(false);
-    setIsLoadingVoice(false);
   };
 
 

@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
     voice = reqVoice;
 
     console.log('Google TTS API called with:', { text: text.substring(0, 50) + '...', voice, style });
+    console.log('Google Cloud API Key exists:', !!process.env.GOOGLE_CLOUD_API_KEY);
+    console.log('API Key starts with:', process.env.GOOGLE_CLOUD_API_KEY?.substring(0, 10));
 
     if (!text || !voice) {
       return NextResponse.json({ error: 'Text and voice are required' }, { status: 400 });
