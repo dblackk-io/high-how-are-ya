@@ -1,21 +1,15 @@
 import axios from 'axios';
 
-// Google Cloud TTS voice options - Best quality and most reliable voices
+// Google Cloud TTS voice options - Only working voices
 export const GOOGLE_VOICE_OPTIONS = {
-  // Professional female voices
-  'rachel': { name: 'en-US-Neural2-F', language: 'en-US' },
-  'sarah': { name: 'en-US-Neural2-I', language: 'en-US' },
-  'emma': { name: 'en-US-Neural2-H', language: 'en-US' },
-  
-  // Professional male voices  
-  'callum': { name: 'en-GB-Neural2-A', language: 'en-GB' },
-  'daniel': { name: 'en-US-Neural2-D', language: 'en-US' },
-  'marcus': { name: 'en-US-Neural2-E', language: 'en-US' },
-  'james': { name: 'en-US-Neural2-B', language: 'en-US' },
-  
-  // Character voices
-  'charlotte': { name: 'en-US-Neural2-C', language: 'en-US' },
-  'arnold': { name: 'en-US-Neural2-G', language: 'en-US' },
+  'sophia': { name: 'en-GB-Neural2-A', language: 'en-GB' }, // was callum (female voice)
+  'daniel': { name: 'en-US-Neural2-D', language: 'en-US' }, // keep as is
+  'luna': { name: 'en-US-Neural2-F', language: 'en-US' },
+  'leo': { name: 'en-US-Neural2-E', language: 'en-US' },
+  'maya': { name: 'en-GB-Neural2-B', language: 'en-GB' },
+  'max': { name: 'en-US-Neural2-G', language: 'en-US' },
+  'zoe': { name: 'en-US-Neural2-H', language: 'en-US' },
+  'finn': { name: 'en-US-Neural2-B', language: 'en-US' },
 };
 
 export const GOOGLE_VOICE_STYLES = {

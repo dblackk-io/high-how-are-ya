@@ -1,22 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-// Google Cloud TTS voice options
+// Google Cloud TTS voice options - Only working voices
 const GOOGLE_VOICE_OPTIONS = {
-  'rachel': { name: 'en-US-Neural2-F', language: 'en-US' },
-  'domi': { name: 'en-US-Neural2-D', language: 'en-US' },
-  'bella': { name: 'en-US-Neural2-C', language: 'en-US' },
-  'antoni': { name: 'en-US-Neural2-A', language: 'en-US' },
-  'thomas': { name: 'en-US-Neural2-B', language: 'en-US' },
-  'josh': { name: 'en-US-Neural2-E', language: 'en-US' },
-  'arnold': { name: 'en-US-Neural2-G', language: 'en-US' },
-  'sam': { name: 'en-US-Neural2-H', language: 'en-US' },
-  'callum': { name: 'en-GB-Neural2-A', language: 'en-GB' },
-  'serena': { name: 'en-US-Neural2-I', language: 'en-US' },
-  'daniel': { name: 'en-US-Neural2-J', language: 'en-US' },
-  'charlotte': { name: 'en-US-Neural2-K', language: 'en-US' },
-  'emily': { name: 'en-US-Neural2-L', language: 'en-US' },
-  'mike': { name: 'en-US-Neural2-M', language: 'en-US' },
+  'sophia': { name: 'en-GB-Neural2-A', language: 'en-GB' }, // was callum (female voice)
+  'daniel': { name: 'en-US-Neural2-D', language: 'en-US' }, // keep as is
+  'luna': { name: 'en-US-Neural2-F', language: 'en-US' },
+  'leo': { name: 'en-US-Neural2-E', language: 'en-US' },
+  'maya': { name: 'en-GB-Neural2-B', language: 'en-GB' },
+  'max': { name: 'en-US-Neural2-G', language: 'en-US' },
+  'zoe': { name: 'en-US-Neural2-H', language: 'en-US' },
+  'finn': { name: 'en-US-Neural2-B', language: 'en-US' },
 };
 
 const GOOGLE_VOICE_STYLES = {
