@@ -74,15 +74,15 @@ function FeedPageContent() {
   // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
+      await supabase.auth.getUser();
+      // Authentication check completed
     };
     
     checkAuth();
     
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session?.user);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      // Auth state changed
     });
     
     return () => subscription.unsubscribe();
@@ -115,7 +115,6 @@ function FeedPageContent() {
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Generate deterministic random values for animations to prevent hydration mismatch
   const animationValues = useMemo(() => {
@@ -685,13 +684,17 @@ function FeedPageContent() {
   const handleSubmitThought = async (thought: string, vibe: string, nsfw: boolean) => {
     try {
       // Create or update user profile first
-      await createOrUpdateUser();
+      const user = await createOrUpdateUser();
+      if (!user) {
+        throw new Error('Failed to create user profile');
+      }
       
       const { error } = await supabase
         .from('thoughts')
         .insert([
           {
             content: thought,
+            user_id: user.id, // Link thought to the user who created it
             vibe_tag: vibe || 'deep', // Default to deep if no vibe selected
             nsfw_flag: nsfw,
             is_active: true,

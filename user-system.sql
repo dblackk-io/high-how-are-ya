@@ -110,22 +110,43 @@ CREATE POLICY "Users can insert own notifications" ON notifications
     )
   );
 
--- Function to get or create user by session
-CREATE OR REPLACE FUNCTION get_or_create_user(session_id_param TEXT)
+-- Function to get or create user by session or auth
+CREATE OR REPLACE FUNCTION get_or_create_user(session_id_param TEXT DEFAULT NULL)
 RETURNS UUID AS $$
 DECLARE
   user_id UUID;
+  auth_user_id UUID;
 BEGIN
-  -- Try to find existing user
-  SELECT id INTO user_id FROM users WHERE session_id = session_id_param;
+  -- First try to get authenticated user
+  SELECT auth.uid() INTO auth_user_id;
   
-  -- If not found, create new user
-  IF user_id IS NULL THEN
-    INSERT INTO users (session_id) VALUES (session_id_param)
-    RETURNING id INTO user_id;
+  IF auth_user_id IS NOT NULL THEN
+    -- User is authenticated, get or create profile
+    SELECT id INTO user_id FROM users WHERE auth_user_id = auth_user_id;
+    
+    IF user_id IS NULL THEN
+      -- Create new user profile for authenticated user
+      INSERT INTO users (auth_user_id, session_id) 
+      VALUES (auth_user_id, COALESCE(session_id_param, 'auth_' || auth_user_id))
+      RETURNING id INTO user_id;
+    ELSE
+      -- Update last active
+      UPDATE users SET last_active = NOW() WHERE id = user_id;
+    END IF;
   ELSE
-    -- Update last active
-    UPDATE users SET last_active = NOW() WHERE id = user_id;
+    -- Fallback to session-based user
+    IF session_id_param IS NULL THEN
+      RETURN NULL;
+    END IF;
+    
+    SELECT id INTO user_id FROM users WHERE session_id = session_id_param;
+    
+    IF user_id IS NULL THEN
+      INSERT INTO users (session_id) VALUES (session_id_param)
+      RETURNING id INTO user_id;
+    ELSE
+      UPDATE users SET last_active = NOW() WHERE id = user_id;
+    END IF;
   END IF;
   
   RETURN user_id;
