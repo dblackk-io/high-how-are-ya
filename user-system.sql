@@ -5,6 +5,7 @@
 CREATE TABLE IF NOT EXISTS users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   session_id TEXT UNIQUE NOT NULL, -- Anonymous session identifier
+  auth_user_id UUID, -- Supabase auth user ID (optional)
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   last_active TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   preferred_vibes TEXT[] DEFAULT '{}',

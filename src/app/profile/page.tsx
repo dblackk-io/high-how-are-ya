@@ -9,6 +9,7 @@ import {
   User,
   Notification 
 } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -42,6 +43,11 @@ export default function ProfilePage() {
         n.id === notificationId ? { ...n, is_read: true } : n
       )
     )
+  }
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
   }
 
   const formatTimeAgo = (dateString: string) => {
@@ -180,6 +186,12 @@ export default function ProfilePage() {
                 className="w-full bg-gray-800 text-white py-3 rounded-xl font-bold hover:bg-gray-700 transition-colors"
               >
                 Back to Feed
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="w-full bg-red-900 text-white py-3 rounded-xl font-bold hover:bg-red-800 transition-colors"
+              >
+                Sign Out
               </button>
             </div>
           </div>

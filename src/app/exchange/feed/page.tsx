@@ -71,6 +71,23 @@ function FeedPageContent() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showIntroModal, setShowIntroModal] = useState(true)
   
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    
+    checkAuth();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session?.user);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Force intro modal to show (remove this line after testing)
   useEffect(() => {
     setShowIntroModal(true)
@@ -98,6 +115,7 @@ function FeedPageContent() {
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Generate deterministic random values for animations to prevent hydration mismatch
   const animationValues = useMemo(() => {

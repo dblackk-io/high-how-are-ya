@@ -96,6 +96,26 @@ export function getSessionId() {
 
 // User system helper functions
 export async function getCurrentUser() {
+  // First try to get authenticated user
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  
+  if (authUser) {
+    // User is authenticated, get their profile
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
+      
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching authenticated user:', error);
+      return null;
+    }
+    
+    return data;
+  }
+  
+  // Fallback to session-based user
   const sessionId = getSessionId();
   if (!sessionId) return null;
   
@@ -106,7 +126,7 @@ export async function getCurrentUser() {
     .single();
     
   if (error && error.code !== 'PGRST116') {
-    console.error('Error fetching user:', error);
+    console.error('Error fetching session user:', error);
     return null;
   }
   
@@ -114,6 +134,32 @@ export async function getCurrentUser() {
 }
 
 export async function createOrUpdateUser() {
+  // First try to get authenticated user
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  
+  if (authUser) {
+    // User is authenticated, create/update their profile
+    const { data, error } = await supabase
+      .from('users')
+      .upsert([
+        {
+          id: authUser.id,
+          session_id: authUser.user_metadata?.anonymous_id || `auth_${authUser.id}`,
+          last_active: new Date().toISOString()
+        }
+      ], { onConflict: 'id' })
+      .select()
+      .single();
+      
+    if (error) {
+      console.error('Error creating/updating authenticated user:', error);
+      return null;
+    }
+    
+    return data;
+  }
+  
+  // Fallback to session-based user
   const sessionId = getSessionId();
   if (!sessionId) return null;
   
@@ -121,7 +167,7 @@ export async function createOrUpdateUser() {
     .rpc('get_or_create_user', { session_id_param: sessionId });
     
   if (error) {
-    console.error('Error creating/updating user:', error);
+    console.error('Error creating/updating session user:', error);
     return null;
   }
   
