@@ -875,12 +875,13 @@ function FeedPageContent() {
   
 
 
-  // Check if user has seen intro before
+  // Force intro modal to show (temporarily disabled localStorage check)
   useEffect(() => {
-    const hasSeenIntro = localStorage.getItem('high-how-are-ya-intro-seen');
-    if (hasSeenIntro === 'true') {
-      setShowIntroModal(false);
-    }
+    // const hasSeenIntro = localStorage.getItem('high-how-are-ya-intro-seen');
+    // if (hasSeenIntro === 'true') {
+    //   setShowIntroModal(false);
+    // }
+    setShowIntroModal(true);
   }, []);
 
   const handleCloseIntroModal = () => {
