@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -10,6 +10,14 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  
+  // Get redirect URL from query params
+  const [redirectTo, setRedirectTo] = useState('/exchange/feed')
+  
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    setRedirectTo(searchParams.get('redirect') || '/exchange/feed')
+  }, [])
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,8 +59,8 @@ export default function SignupPage() {
           console.error('Error creating profile:', profileError)
         }
 
-        // Redirect to feed
-        router.push('/exchange/feed')
+        // Redirect to the intended page or feed
+        router.push(redirectTo)
       }
     } catch (err) {
       setError('An unexpected error occurred')

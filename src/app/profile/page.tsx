@@ -24,6 +24,15 @@ export default function ProfilePage() {
 
   const loadUserData = async () => {
     try {
+      // Check if user is authenticated
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      
+      if (!authUser) {
+        // User is not authenticated, redirect to login
+        router.push('/login?redirect=/profile')
+        return
+      }
+      
       const userData = await getCurrentUser()
       const notificationsData = await getNotifications(20)
       
@@ -31,6 +40,8 @@ export default function ProfilePage() {
       setNotifications(notificationsData)
     } catch (error) {
       console.error('Error loading user data:', error)
+      // If there's an error, redirect to login
+      router.push('/login?redirect=/profile')
     } finally {
       setLoading(false)
     }

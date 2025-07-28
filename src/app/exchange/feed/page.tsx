@@ -74,15 +74,15 @@ function FeedPageContent() {
   // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
-      await supabase.auth.getUser();
-      // Authentication check completed
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
     };
     
     checkAuth();
     
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      // Auth state changed
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session?.user);
     });
     
     return () => subscription.unsubscribe();
@@ -115,6 +115,7 @@ function FeedPageContent() {
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Generate deterministic random values for animations to prevent hydration mismatch
   const animationValues = useMemo(() => {
@@ -1266,25 +1267,52 @@ function FeedPageContent() {
         
         {/* Floating Action Buttons */}
         <div className="fixed bottom-8 right-8 z-50 flex flex-col space-y-3">
-          {/* Profile Button */}
-          <div className="group">
-            <button
-              onClick={() => router.push('/profile')}
-              className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center shadow-2xl hover:bg-gray-700 transition-all duration-300 transform hover:scale-110 relative border border-gray-700"
-            >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              
-              {/* Tooltip */}
-              <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
-                boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
-              }}>
-                Your Profile
-                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
-              </div>
-            </button>
-          </div>
+          {/* Profile Button - Only show for authenticated users */}
+          {isAuthenticated && (
+            <div className="group">
+              <button
+                onClick={() => router.push('/profile')}
+                className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center shadow-2xl hover:bg-gray-700 transition-all duration-300 transform hover:scale-110 relative border border-gray-700"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                
+                {/* Tooltip */}
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
+                  boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
+                }}>
+                  Your Profile
+                  <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                </div>
+              </button>
+            </div>
+          )}
+          
+          {/* Sign Up Button - Only show for unauthenticated users */}
+          {!isAuthenticated && (
+            <div className="group">
+              <button
+                onClick={() => router.push('/signup')}
+                className="w-12 h-12 bg-[#ff00cc] rounded-full flex items-center justify-center shadow-2xl hover:bg-[#ff33cc] transition-all duration-300 transform hover:scale-110 relative"
+                style={{
+                  boxShadow: "0 0 30px rgba(255, 0, 204, 0.6)"
+                }}
+              >
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                
+                {/* Tooltip */}
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
+                  boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
+                }}>
+                  Sign Up
+                  <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                </div>
+              </button>
+            </div>
+          )}
 
           {/* Plus Button */}
           <div className="group">
