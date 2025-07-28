@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase, Comment, getSessionId } from '@/lib/supabase'
+import { supabase, Comment, getSessionId, updateThoughtStats, createNotification, createOrUpdateUser } from '@/lib/supabase'
 import { googleVoiceService } from '@/lib/google-voice-service'
 import ThoughtSubmit from '@/components/ThoughtSubmit'
 import ReportModal from '@/components/ReportModal'
@@ -666,6 +666,9 @@ function FeedPageContent() {
 
   const handleSubmitThought = async (thought: string, vibe: string, nsfw: boolean) => {
     try {
+      // Create or update user profile first
+      await createOrUpdateUser();
+      
       const { error } = await supabase
         .from('thoughts')
         .insert([
@@ -747,6 +750,14 @@ function FeedPageContent() {
 
       // Track the comment interaction
       trackUserInteraction(getCurrentThought()!.id, 'comment');
+      
+      // Update user stats and create notification
+      await updateThoughtStats(getCurrentThought()!.id, 'comment');
+      await createNotification(
+        getCurrentThought()!.id, 
+        'comment', 
+        `Someone commented on your thought: "${getCurrentThought()!.content.slice(0, 50)}${getCurrentThought()!.content.length > 50 ? '...' : ''}"`
+      );
       
       // Refresh comments
       await fetchComments(getCurrentThought()!.id);
@@ -1232,27 +1243,50 @@ function FeedPageContent() {
       {/* Story-Style Feed Container */}
       <div className="w-full h-screen relative overflow-hidden">
         
-        {/* Floating Plus Button */}
-        <div className="fixed bottom-8 right-8 z-50 group">
-          <button
-            onClick={() => router.push('/exchange/add-thought')}
-            className="w-16 h-16 bg-[#ff00cc] rounded-full flex items-center justify-center shadow-2xl hover:bg-[#ff33cc] transition-all duration-300 transform hover:scale-110 relative"
-            style={{
-              boxShadow: "0 0 30px rgba(255, 0, 204, 0.6)"
-            }}
-          >
-            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-            </svg>
-            
-            {/* Tooltip */}
-            <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
-              boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
-            }}>
-              Add a thought
-              <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
-            </div>
-          </button>
+        {/* Floating Action Buttons */}
+        <div className="fixed bottom-8 right-8 z-50 flex flex-col space-y-3">
+          {/* Profile Button */}
+          <div className="group">
+            <button
+              onClick={() => router.push('/profile')}
+              className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center shadow-2xl hover:bg-gray-700 transition-all duration-300 transform hover:scale-110 relative border border-gray-700"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              
+              {/* Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
+                boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
+              }}>
+                Your Profile
+                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+              </div>
+            </button>
+          </div>
+
+          {/* Plus Button */}
+          <div className="group">
+            <button
+              onClick={() => router.push('/exchange/add-thought')}
+              className="w-16 h-16 bg-[#ff00cc] rounded-full flex items-center justify-center shadow-2xl hover:bg-[#ff33cc] transition-all duration-300 transform hover:scale-110 relative"
+              style={{
+                boxShadow: "0 0 30px rgba(255, 0, 204, 0.6)"
+              }}
+            >
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+              </svg>
+              
+              {/* Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none" style={{
+                boxShadow: "0 0 15px rgba(255, 0, 204, 0.3)"
+              }}>
+                Add a thought
+                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+              </div>
+            </button>
+          </div>
         </div>
 
         {isLoading && thoughts.length === 0 ? (
@@ -1468,10 +1502,20 @@ function FeedPageContent() {
 
                         {/* Boost */}
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             console.log('Boost clicked, currentThought:', currentThought);
                             if (currentThought) {
+                              // Track for recommendation system
                               trackUserInteraction(currentThought.id, 'boost');
+                              
+                              // Update user stats and create notification
+                              await updateThoughtStats(currentThought.id, 'boost');
+                              await createNotification(
+                                currentThought.id, 
+                                'boost', 
+                                `Someone boosted your thought: "${currentThought.content.slice(0, 50)}${currentThought.content.length > 50 ? '...' : ''}"`
+                              );
+                              
                               nextThought();
                             }
                           }}
