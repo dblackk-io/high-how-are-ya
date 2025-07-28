@@ -88,7 +88,7 @@ function FeedPageContent() {
   const [thoughtMetrics, setThoughtMetrics] = useState<{ [thoughtId: string]: { views: number; boosts: number; strikes: number; comments: number } }>({});
   const [viewStartTime, setViewStartTime] = useState<number>(0);
   const [currentThoughtId, setCurrentThoughtId] = useState<string | null>(null);
-  const [selectedVoice, setSelectedVoice] = useState<string>('rachel');
+  const [selectedVoice, setSelectedVoice] = useState<string>('sophia');
   const [showVoicePanel, setShowVoicePanel] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
@@ -1674,48 +1674,18 @@ function FeedPageContent() {
                 {/* Voice Selection */}
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => setSelectedVoice('rachel')}
+                    onClick={() => setSelectedVoice('sophia')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'rachel'
+                      selectedVoice === 'sophia'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">R</span>
+                      <span className="text-white font-bold text-lg">S</span>
                     </div>
-                    <div className="font-semibold text-sm">Rachel</div>
-                    <div className="text-xs opacity-75">Professional</div>
-                  </button>
-
-                  <button
-                    onClick={() => setSelectedVoice('callum')}
-                    className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'callum'
-                        ? 'bg-[#ff00cc] text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">C</span>
-                    </div>
-                    <div className="font-semibold text-sm">Callum</div>
-                    <div className="text-xs opacity-75">British</div>
-                  </button>
-
-                  <button
-                    onClick={() => setSelectedVoice('charlotte')}
-                    className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'charlotte'
-                        ? 'bg-[#ff00cc] text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-pink-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">C</span>
-                    </div>
-                    <div className="font-semibold text-sm">Charlotte</div>
-                    <div className="text-xs opacity-75">Young & Energetic</div>
+                    <div className="font-semibold text-sm">Sophia</div>
+                    <div className="text-xs opacity-75">British Female</div>
                   </button>
 
                   <button
@@ -1730,43 +1700,58 @@ function FeedPageContent() {
                       <span className="text-white font-bold text-lg">D</span>
                     </div>
                     <div className="font-semibold text-sm">Daniel</div>
-                    <div className="text-xs opacity-75">Goofy</div>
+                    <div className="text-xs opacity-75">Professional Male</div>
                   </button>
 
                   <button
-                    onClick={() => setSelectedVoice('arnold')}
+                    onClick={() => setSelectedVoice('luna')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'arnold'
+                      selectedVoice === 'luna'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">L</span>
+                    </div>
+                    <div className="font-semibold text-sm">Luna</div>
+                    <div className="text-xs opacity-75">US Female</div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('leo')}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      selectedVoice === 'leo'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">A</span>
+                      <span className="text-white font-bold text-lg">L</span>
                     </div>
-                    <div className="font-semibold text-sm">Arnold</div>
-                    <div className="text-xs opacity-75">Deep & Strong</div>
+                    <div className="font-semibold text-sm">Leo</div>
+                    <div className="text-xs opacity-75">US Male</div>
                   </button>
 
                   <button
-                    onClick={() => setSelectedVoice('sarah')}
+                    onClick={() => setSelectedVoice('maya')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'sarah'
+                      selectedVoice === 'maya'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">S</span>
+                      <span className="text-white font-bold text-lg">M</span>
                     </div>
-                    <div className="font-semibold text-sm">Sarah</div>
-                    <div className="text-xs opacity-75">Sweet</div>
+                    <div className="font-semibold text-sm">Maya</div>
+                    <div className="text-xs opacity-75">British Female</div>
                   </button>
 
                   <button
-                    onClick={() => setSelectedVoice('marcus')}
+                    onClick={() => setSelectedVoice('max')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'marcus'
+                      selectedVoice === 'max'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
@@ -1774,38 +1759,38 @@ function FeedPageContent() {
                     <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                       <span className="text-white font-bold text-lg">M</span>
                     </div>
-                    <div className="font-semibold text-sm">Marcus</div>
-                    <div className="text-xs opacity-75">Casual</div>
+                    <div className="font-semibold text-sm">Max</div>
+                    <div className="text-xs opacity-75">US Male</div>
                   </button>
 
                   <button
-                    onClick={() => setSelectedVoice('emma')}
+                    onClick={() => setSelectedVoice('zoe')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'emma'
+                      selectedVoice === 'zoe'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">E</span>
+                      <span className="text-white font-bold text-lg">Z</span>
                     </div>
-                    <div className="font-semibold text-sm">Emma</div>
-                    <div className="text-xs opacity-75">Bubbly</div>
+                    <div className="font-semibold text-sm">Zoe</div>
+                    <div className="text-xs opacity-75">US Female</div>
                   </button>
 
                   <button
-                    onClick={() => setSelectedVoice('james')}
+                    onClick={() => setSelectedVoice('finn')}
                     className={`p-4 rounded-lg text-center transition-all ${
-                      selectedVoice === 'james'
+                      selectedVoice === 'finn'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">J</span>
+                      <span className="text-white font-bold text-lg">F</span>
                     </div>
-                    <div className="font-semibold text-sm">James</div>
-                    <div className="text-xs opacity-75">Serious</div>
+                    <div className="font-semibold text-sm">Finn</div>
+                    <div className="text-xs opacity-75">US Male</div>
                   </button>
                 </div>
 
