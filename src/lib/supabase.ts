@@ -187,15 +187,37 @@ export async function updateThoughtStats(thoughtId: string, actionType: 'boost' 
 }
 
 export async function createNotification(thoughtId: string, type: 'boost' | 'strike' | 'comment', message: string) {
-  const { error } = await supabase
-    .rpc('create_notification', { 
-      thought_id_param: thoughtId, 
-      notification_type: type, 
-      message_param: message 
-    });
+  try {
+    // Get the thought to find the owner
+    const { data: thought, error: thoughtError } = await supabase
+      .from('thoughts')
+      .select('user_id')
+      .eq('id', thoughtId)
+      .single();
+      
+    if (thoughtError || !thought?.user_id) {
+      console.error('Error finding thought owner:', thoughtError);
+      return;
+    }
     
-  if (error) {
-    console.error('Error creating notification:', error);
+    // Create notification for the thought owner
+    const { error } = await supabase
+      .from('notifications')
+      .insert([
+        {
+          user_id: thought.user_id,
+          thought_id: thoughtId,
+          type,
+          message,
+          is_read: false
+        }
+      ]);
+      
+    if (error) {
+      console.error('Error creating notification:', error);
+    }
+  } catch (err) {
+    console.error('Error in createNotification:', err);
   }
 }
 
@@ -218,21 +240,47 @@ export async function getUserThoughtStats(thoughtId: string) {
 }
 
 export async function getNotifications(limit = 10) {
-  const sessionId = getSessionId();
-  if (!sessionId) return [];
-  
-  const { data, error } = await supabase
-    .from('notifications')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(limit);
+  try {
+    // First try to get authenticated user
+    const { data: { user: authUser } } = await supabase.auth.getUser();
     
-  if (error) {
-    console.error('Error fetching notifications:', error);
+    if (authUser) {
+      // User is authenticated, get their notifications
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', authUser.id)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+        
+      if (error) {
+        console.error('Error fetching authenticated user notifications:', error);
+        return [];
+      }
+      
+      return data || [];
+    }
+    
+    // Fallback to session-based notifications (for backward compatibility)
+    const sessionId = getSessionId();
+    if (!sessionId) return [];
+    
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+      
+    if (error) {
+      console.error('Error fetching session notifications:', error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (err) {
+    console.error('Error in getNotifications:', err);
     return [];
   }
-  
-  return data || [];
 }
 
 export async function markNotificationAsRead(notificationId: string) {

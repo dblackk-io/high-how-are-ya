@@ -255,12 +255,18 @@ function FeedPageContent() {
     
     // Save interaction to database
     try {
+      // Get the current authenticated user or session
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      const userId = authUser?.id || null;
+      const sessionId = getSessionId();
+      
       const { error } = await supabase
         .from('interactions')
         .insert([
           {
             thought_id: thoughtId,
-            session_id: getSessionId(),
+            user_id: userId, // Use authenticated user ID if available
+            session_id: sessionId, // Fallback to session ID
             action,
             time_spent: timeSpent,
             completion_rate: completionRate
@@ -775,11 +781,15 @@ function FeedPageContent() {
       
       // Update user stats and create notification
       await updateThoughtStats(getCurrentThought()!.id, 'comment');
-      await createNotification(
-        getCurrentThought()!.id, 
-        'comment', 
-        `Someone commented on your thought: "${getCurrentThought()!.content.slice(0, 50)}${getCurrentThought()!.content.length > 50 ? '...' : ''}"`
-      );
+      
+      // Only create notification if the thought has an owner
+      if (getCurrentThought()!.user_id) {
+        await createNotification(
+          getCurrentThought()!.id, 
+          'comment', 
+          `Someone commented on your thought: "${getCurrentThought()!.content.slice(0, 50)}${getCurrentThought()!.content.length > 50 ? '...' : ''}"`
+        );
+      }
       
       // Refresh comments
       await fetchComments(getCurrentThought()!.id);
@@ -1559,11 +1569,15 @@ function FeedPageContent() {
                               
                               // Update user stats and create notification
                               await updateThoughtStats(currentThought.id, 'boost');
-                              await createNotification(
-                                currentThought.id, 
-                                'boost', 
-                                `Someone boosted your thought: "${currentThought.content.slice(0, 50)}${currentThought.content.length > 50 ? '...' : ''}"`
-                              );
+                              
+                              // Only create notification if the thought has an owner
+                              if (currentThought.user_id) {
+                                await createNotification(
+                                  currentThought.id, 
+                                  'boost', 
+                                  `Someone boosted your thought: "${currentThought.content.slice(0, 50)}${currentThought.content.length > 50 ? '...' : ''}"`
+                                );
+                              }
                               
                               nextThought();
                             }
