@@ -39,8 +39,8 @@ export default function ExchangePage() {
           }
         `}</style>
         
-        {/* Two main buttons with proper spacing */}
-        <div className="flex flex-col md:flex-row gap-6 items-center" style={{ marginTop: '60px', marginBottom: '60px' }}>
+        {/* Main action buttons */}
+        <div className="flex flex-col md:flex-row gap-6 items-center" style={{ marginTop: '60px', marginBottom: '40px' }}>
           <button
             onClick={() => router.push('/exchange/add-thought')}
             style={{
@@ -86,6 +86,50 @@ export default function ExchangePage() {
             }}
           >
             What&apos;s Everyone Thinking
+          </button>
+        </div>
+        
+        {/* Account navigation */}
+        <div className="flex flex-col md:flex-row gap-4 items-center" style={{ marginBottom: '60px' }}>
+          <button
+            onClick={() => router.push('/signup')}
+            style={{
+              backgroundColor: 'transparent',
+              color: '#666',
+              border: '1px solid #666',
+              fontSize: '1rem',
+              padding: '0.5rem 1rem',
+              minWidth: '120px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Sign Up
+          </button>
+          <button
+            onClick={() => router.push('/login')}
+            style={{
+              backgroundColor: 'transparent',
+              color: '#666',
+              border: '1px solid #666',
+              fontSize: '1rem',
+              padding: '0.5rem 1rem',
+              minWidth: '120px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Sign In
           </button>
         </div>
       </div>

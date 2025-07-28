@@ -24,30 +24,77 @@ export default function Home() {
           <h1 className="text-center font-black text-[6rem] md:text-[8rem] neon-title uppercase tracking-tight mb-16" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.05em', lineHeight: 1.1 }}>
             HIGH HOW ARE YA
           </h1>
-          {/* Enter button matching exchange page style */}
-          <button
-            onClick={handleEnter}
-            style={{
-              backgroundColor: 'transparent',
-              color: '#ff00cc',
-              border: '2px solid #ff00cc',
-              textShadow: '0 0 30px #ff00cc, 0 0 60px #ff00cc, 0 0 120px #ff00cc',
-              boxShadow: '0 0 40px rgba(255, 0, 204, 0.3)',
-              fontSize: '1.2rem',
-              padding: '0.75rem 1.5rem',
-              minWidth: '180px',
-              minHeight: '44px',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: '900',
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              borderRadius: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Enter
-          </button>
+          {/* Main action buttons */}
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <button
+              onClick={handleEnter}
+              style={{
+                backgroundColor: 'transparent',
+                color: '#ff00cc',
+                border: '2px solid #ff00cc',
+                textShadow: '0 0 30px #ff00cc, 0 0 60px #ff00cc, 0 0 120px #ff00cc',
+                boxShadow: '0 0 40px rgba(255, 0, 204, 0.3)',
+                fontSize: '1.2rem',
+                padding: '0.75rem 1.5rem',
+                minWidth: '180px',
+                minHeight: '44px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '900',
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                borderRadius: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Enter
+            </button>
+            <button
+              onClick={() => router.push('/signup')}
+              style={{
+                backgroundColor: 'transparent',
+                color: '#fff',
+                border: '2px solid #fff',
+                textShadow: '0 0 20px #fff, 0 0 40px #fff',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.3)',
+                fontSize: '1.2rem',
+                padding: '0.75rem 1.5rem',
+                minWidth: '180px',
+                minHeight: '44px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '900',
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                borderRadius: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
+          
+          {/* Login link */}
+          <div className="mt-6">
+            <button
+              onClick={() => router.push('/login')}
+              style={{
+                color: '#666',
+                fontSize: '1rem',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '400',
+                textDecoration: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.3s ease'
+              }}
+              onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#ff00cc'}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#666'}
+            >
+              Already have an account? Sign in
+            </button>
+          </div>
         </div>
       </main>
       <style jsx global>{`
