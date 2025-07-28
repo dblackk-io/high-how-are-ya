@@ -6,10 +6,10 @@ export const GOOGLE_VOICE_OPTIONS = {
   'daniel': { name: 'en-US-Neural2-D', language: 'en-US' }, // keep as is
   'luna': { name: 'en-US-Neural2-F', language: 'en-US' },
   'leo': { name: 'en-US-Neural2-E', language: 'en-US' },
-  'maya': { name: 'en-GB-Neural2-B', language: 'en-GB' },
-  'max': { name: 'en-US-Neural2-G', language: 'en-US' },
+  'maya': { name: 'en-US-Neural2-B', language: 'en-US' }, // changed to male voice
+  'max': { name: 'en-US-Neural2-I', language: 'en-US' }, // changed to female voice
   'zoe': { name: 'en-US-Neural2-H', language: 'en-US' },
-  'finn': { name: 'en-US-Neural2-B', language: 'en-US' },
+  'finn': { name: 'en-US-Neural2-G', language: 'en-US' }, // changed to working male voice
 };
 
 export const GOOGLE_VOICE_STYLES = {

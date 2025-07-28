@@ -70,6 +70,11 @@ function FeedPageContent() {
   const [hasMore, setHasMore] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showIntroModal, setShowIntroModal] = useState(true)
+  
+  // Force intro modal to show (remove this line after testing)
+  useEffect(() => {
+    setShowIntroModal(true)
+  }, [])
 
   const [showComments, setShowComments] = useState(false);
   const [showUserStats, setShowUserStats] = useState(false);
@@ -1745,7 +1750,7 @@ function FeedPageContent() {
                       <span className="text-white font-bold text-lg">M</span>
                     </div>
                     <div className="font-semibold text-sm">Maya</div>
-                    <div className="text-xs opacity-75">British Female</div>
+                    <div className="text-xs opacity-75">US Male</div>
                   </button>
 
                   <button
@@ -1760,7 +1765,7 @@ function FeedPageContent() {
                       <span className="text-white font-bold text-lg">M</span>
                     </div>
                     <div className="font-semibold text-sm">Max</div>
-                    <div className="text-xs opacity-75">US Male</div>
+                    <div className="text-xs opacity-75">US Female</div>
                   </button>
 
                   <button
