@@ -1669,83 +1669,143 @@ function FeedPageContent() {
             </div>
             <div className="flex-1 overflow-y-auto p-6">
                               <div className="text-center text-gray-400 py-8">
-                  <h3 className="text-xl font-bold text-white mb-4">Voices</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">Character Voice</h3>
                 
                 {/* Voice Selection */}
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setSelectedVoice('rachel')}
-                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                    className={`p-4 rounded-lg text-center transition-all ${
                       selectedVoice === 'rachel'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
-                    <span className="text-xl">👩‍💼</span>
-                    <div>
-                      <div className="font-semibold">Rachel</div>
-                      <div className="text-sm opacity-75">Professional & Warm</div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">R</span>
                     </div>
+                    <div className="font-semibold text-sm">Rachel</div>
+                    <div className="text-xs opacity-75">Professional</div>
                   </button>
 
                   <button
                     onClick={() => setSelectedVoice('callum')}
-                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                    className={`p-4 rounded-lg text-center transition-all ${
                       selectedVoice === 'callum'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
-                    <span className="text-xl">👨‍💂</span>
-                    <div>
-                      <div className="font-semibold">Callum</div>
-                      <div className="text-sm opacity-75">British & Sophisticated</div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">C</span>
                     </div>
+                    <div className="font-semibold text-sm">Callum</div>
+                    <div className="text-xs opacity-75">British</div>
                   </button>
 
                   <button
                     onClick={() => setSelectedVoice('charlotte')}
-                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                    className={`p-4 rounded-lg text-center transition-all ${
                       selectedVoice === 'charlotte'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
-                    <span className="text-xl">👩‍🎭</span>
-                    <div>
-                      <div className="font-semibold">Charlotte</div>
-                      <div className="text-sm opacity-75">Sassy & Dramatic</div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-pink-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">C</span>
                     </div>
+                    <div className="font-semibold text-sm">Charlotte</div>
+                    <div className="text-xs opacity-75">Sassy</div>
                   </button>
 
                   <button
                     onClick={() => setSelectedVoice('daniel')}
-                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                    className={`p-4 rounded-lg text-center transition-all ${
                       selectedVoice === 'daniel'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
-                    <span className="text-xl">🤪</span>
-                    <div>
-                      <div className="font-semibold">Daniel</div>
-                      <div className="text-sm opacity-75">Goofy & Expressive</div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-teal-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">D</span>
                     </div>
+                    <div className="font-semibold text-sm">Daniel</div>
+                    <div className="text-xs opacity-75">Goofy</div>
                   </button>
 
                   <button
                     onClick={() => setSelectedVoice('arnold')}
-                    className={`w-full p-4 rounded-lg text-left transition-all flex items-center space-x-3 ${
+                    className={`p-4 rounded-lg text-center transition-all ${
                       selectedVoice === 'arnold'
                         ? 'bg-[#ff00cc] text-white'
                         : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}
                   >
-                    <span className="text-xl">💪</span>
-                    <div>
-                      <div className="font-semibold">Arnold</div>
-                      <div className="text-sm opacity-75">Deep & Powerful</div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">A</span>
                     </div>
+                    <div className="font-semibold text-sm">Arnold</div>
+                    <div className="text-xs opacity-75">Powerful</div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('sarah')}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      selectedVoice === 'sarah'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">S</span>
+                    </div>
+                    <div className="font-semibold text-sm">Sarah</div>
+                    <div className="text-xs opacity-75">Sweet</div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('marcus')}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      selectedVoice === 'marcus'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">M</span>
+                    </div>
+                    <div className="font-semibold text-sm">Marcus</div>
+                    <div className="text-xs opacity-75">Casual</div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('emma')}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      selectedVoice === 'emma'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">E</span>
+                    </div>
+                    <div className="font-semibold text-sm">Emma</div>
+                    <div className="text-xs opacity-75">Bubbly</div>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedVoice('james')}
+                    className={`p-4 rounded-lg text-center transition-all ${
+                      selectedVoice === 'james'
+                        ? 'bg-[#ff00cc] text-white'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">J</span>
+                    </div>
+                    <div className="font-semibold text-sm">James</div>
+                    <div className="text-xs opacity-75">Serious</div>
                   </button>
                 </div>
 

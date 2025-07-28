@@ -4,21 +4,14 @@ import axios from 'axios';
 export const GOOGLE_VOICE_OPTIONS = {
   // Professional voices
   'rachel': { name: 'en-US-Neural2-F', language: 'en-US' },
-  'domi': { name: 'en-US-Neural2-D', language: 'en-US' },
-  'bella': { name: 'en-US-Neural2-C', language: 'en-US' },
-  'antoni': { name: 'en-US-Neural2-A', language: 'en-US' },
-  'thomas': { name: 'en-US-Neural2-B', language: 'en-US' },
-  'josh': { name: 'en-US-Neural2-E', language: 'en-US' },
-  'arnold': { name: 'en-US-Neural2-G', language: 'en-US' },
-  'sam': { name: 'en-US-Neural2-H', language: 'en-US' },
   'callum': { name: 'en-GB-Neural2-A', language: 'en-GB' },
-  'serena': { name: 'en-US-Neural2-I', language: 'en-US' },
-  
-  // Additional voices
-  'daniel': { name: 'en-US-Neural2-J', language: 'en-US' },
-  'charlotte': { name: 'en-US-Neural2-K', language: 'en-US' },
-  'emily': { name: 'en-US-Neural2-L', language: 'en-US' },
-  'mike': { name: 'en-US-Neural2-M', language: 'en-US' },
+  'charlotte': { name: 'en-US-Neural2-C', language: 'en-US' },
+  'daniel': { name: 'en-US-Neural2-D', language: 'en-US' },
+  'arnold': { name: 'en-US-Neural2-G', language: 'en-US' },
+  'sarah': { name: 'en-US-Neural2-I', language: 'en-US' },
+  'marcus': { name: 'en-US-Neural2-E', language: 'en-US' },
+  'emma': { name: 'en-US-Neural2-H', language: 'en-US' },
+  'james': { name: 'en-US-Neural2-B', language: 'en-US' },
 };
 
 export const GOOGLE_VOICE_STYLES = {
@@ -45,7 +38,7 @@ class GoogleVoiceService {
       console.log('Sending to Google TTS API:', { text: text.substring(0, 50) + '...', voice: voiceName, style });
       
       const response = await axios.post(
-        '/api/google-voice',
+        '/api/voice',
         {
           text,
           voice: voiceName,
