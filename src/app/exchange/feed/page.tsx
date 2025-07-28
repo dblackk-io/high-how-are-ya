@@ -1715,7 +1715,7 @@ function FeedPageContent() {
                       <span className="text-white font-bold text-lg">C</span>
                     </div>
                     <div className="font-semibold text-sm">Charlotte</div>
-                    <div className="text-xs opacity-75">Sassy</div>
+                    <div className="text-xs opacity-75">Young & Energetic</div>
                   </button>
 
                   <button
@@ -1745,7 +1745,7 @@ function FeedPageContent() {
                       <span className="text-white font-bold text-lg">A</span>
                     </div>
                     <div className="font-semibold text-sm">Arnold</div>
-                    <div className="text-xs opacity-75">Powerful</div>
+                    <div className="text-xs opacity-75">Deep & Strong</div>
                   </button>
 
                   <button
