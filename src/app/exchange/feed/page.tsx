@@ -1548,14 +1548,14 @@ function FeedPageContent() {
                 </div>
 
                 {/* Navigation Hint */}
-                <div className="absolute bottom-20 left-4 sm:left-8 text-gray-500 text-sm animate-pulse">
+                <div className="absolute bottom-32 left-4 sm:left-8 text-gray-500 text-sm animate-pulse">
                   ← Swipe or use buttons below
                 </div>
                 
                 {/* Next Button */}
                 <button
                   onClick={nextThought}
-                  className="absolute bottom-20 right-4 sm:right-8 bg-[#ff00cc] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold hover:bg-[#ff33cc] transition-all duration-300 shadow-lg text-sm sm:text-base"
+                  className="absolute bottom-32 right-4 sm:right-8 bg-[#ff00cc] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold hover:bg-[#ff33cc] transition-all duration-300 shadow-lg text-sm sm:text-base"
                 >
                   Next
                 </button>
