@@ -57,21 +57,22 @@ export async function POST(request: NextRequest) {
     console.log('Using Google voice:', voiceConfig.name, 'with style:', styleConfig);
 
     // Call Google Cloud TTS API
-    const response = await axios.post(
-      'https://texttospeech.googleapis.com/v1/text:synthesize',
-      {
-        input: { text },
-        voice: {
-          languageCode: voiceConfig.language,
-          name: voiceConfig.name
-        },
-        audioConfig: {
-          audioEncoding: 'MP3',
-          speakingRate: styleConfig.speakingRate,
-          pitch: styleConfig.pitch,
-          volumeGainDb: styleConfig.volumeGainDb
-        }
-      },
+               const response = await axios.post(
+             'https://texttospeech.googleapis.com/v1/text:synthesize',
+             {
+               input: { text },
+               voice: {
+                 languageCode: voiceConfig.language,
+                 name: voiceConfig.name
+               },
+               audioConfig: {
+                 audioEncoding: 'MP3',
+                 speakingRate: 0.95,
+                 pitch: 0.0,
+                 volumeGainDb: 0.0,
+                 effectsProfileId: ['headphone-class-device']
+               }
+             },
       {
         headers: {
           'Content-Type': 'application/json',
